@@ -6,11 +6,9 @@
 # @Software: PyCharm
 
 
-from flask_login import current_user
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, HiddenField, ValidationError
-from wtforms.validators import DataRequired, Length, Email, EqualTo, Optional, Regexp
+from wtforms import StringField, PasswordField, SubmitField, ValidationError
+from wtforms.validators import DataRequired, Length, Email, EqualTo
 
 from server.models import User
 
