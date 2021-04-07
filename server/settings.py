@@ -16,7 +16,7 @@ basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 class Operations:
     CONFIRM = 'confirm'
     RESET_PASSWORD = 'reset-password'
-    CHANGE_EMAIL = 'change-email'
+    CHANGE_EMAIL = 'change-emails'
 
 
 # 'mysql+pymysql://用户名称:密码@localhost:端口/数据库名称'
@@ -33,4 +33,5 @@ MAIL_USE_SSL = True
 MAIL_USE_TLS = False
 MAIL_USERNAME = 'hangzhouwh@qq.com'
 MAIL_PASSWORD = 'amzzvffdquulbgbi'  # qq邮箱授权码
+MAIL_DEFAULT_SENDER = ('ScratchAi Admin', MAIL_USERNAME)
 SCRATCHAI_MAIL_SUBJECT_PREFIX = '[scratchai]'

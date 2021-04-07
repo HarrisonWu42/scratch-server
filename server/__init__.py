@@ -4,15 +4,18 @@
 # @Email: hangzhouwh@gmail.com
 # @File : __init__.py 
 # @Software: PyCharm
+
+
 import os
 
 from flask import Flask
+from flask_login import current_user
 
 from server.blueprints.auth import auth_bp
 from server.blueprints.admin import admin_bp
-from server.extensions import db, mail, moment
+from server.blueprints.home import home_bp
+from server.extensions import db, mail, moment, login_manager
 from server.models import User
-from sqlalchemy.schema import CreateTable
 
 
 def create_app(config_name=None):
@@ -35,19 +38,18 @@ def register_logging(app):
 
 def register_extensions(app):
     db.init_app(app)
+    login_manager.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
 
 
 def register_blueprints(app):
     app.register_blueprint(auth_bp, url_prefix='/auth')
-    # app.register_blueprint(admin_bp, url_prefix='/admin')
+    app.register_blueprint(home_bp, url_prefix='/home')
 
 
 def regitser_shell_context(app):
     @app.shell_context_processor
     def make_shell_context():
         return dict(db=db)
-
-
 

@@ -9,6 +9,9 @@
 import os
 from datetime import datetime
 
+from flask import current_app
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 from server.extensions import db
 
 
@@ -38,17 +41,33 @@ class Role(db.Model):
 	permissions = db.relationship('Permission', secondary=roles_permissions, back_populates='roles')
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(20))
 	email = db.Column(db.String(254), unique=True, index=True)
 	password_hash = db.Column(db.String(128))
+
+	confirmed = db.Column(db.Boolean, default=False)
 
 	role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
 	role = db.relationship('Role', back_populates='users')
 
 	projects = db.relationship('Project', back_populates='user')
 	groups = db.relationship('Group', secondary=users_groups, back_populates='users')
+
+	def set_password(self, password):
+		self.password_hash = generate_password_hash(password)
+
+	def set_role(self):
+		if self.role is None:
+			if self.email == current_app.config['ALBUMY_ADMIN_EMAIL']:
+				self.role = Role.query.filter_by(name='Administrator').first()
+			else:
+				self.role = Role.query.filter_by(name='User').first()
+			db.session.commit()
+
+	def validate_password(self, password):
+		return check_password_hash(self.password_hash, password)
 
 
 class Group(db.Model):

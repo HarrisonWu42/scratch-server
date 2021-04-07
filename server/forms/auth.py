@@ -29,7 +29,7 @@ class RegisterForm(FlaskForm):
 
     def validate_email(self, field):
         if User.query.filter_by(email=field.data.lower()).first():
-            raise ValidationError('The email is already in use.')
+            raise ValidationError('The emails is already in use.')
 
 
 class ForgetPasswordForm(FlaskForm):
