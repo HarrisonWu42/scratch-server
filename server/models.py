@@ -5,6 +5,7 @@
 # @File : models.py 
 # @Software: PyCharm
 
+
 import os
 from datetime import datetime
 
@@ -39,13 +40,14 @@ class Role(db.Model):
 
 class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
-	username = db.Column(db.String(20))
+	name = db.Column(db.String(20))
 	email = db.Column(db.String(254), unique=True, index=True)
 	password_hash = db.Column(db.String(128))
 
 	role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
 	role = db.relationship('Role', back_populates='users')
 
+	projects = db.relationship('Project', back_populates='user')
 	groups = db.relationship('Group', secondary=users_groups, back_populates='users')
 
 
@@ -71,7 +73,7 @@ class Project(db.Model):
 	complexity = db.Column(db.Float)
 
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-	user = db.relationship('Commit', back_populates='student')
+	user = db.relationship('User', back_populates='projects')
 
 	teacher_id = db.Column(db.Integer)
 
