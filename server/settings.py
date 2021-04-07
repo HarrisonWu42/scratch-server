@@ -25,3 +25,12 @@ SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'secret string')
+
+# Email
+MAIL_SERVER = 'smtp.qq.com'
+MAIL_PORT = 465
+MAIL_USE_SSL = True
+MAIL_USE_TLS = False
+MAIL_USERNAME = 'hangzhouwh@qq.com'
+MAIL_PASSWORD = 'amzzvffdquulbgbi'  # qq邮箱授权码
+SCRATCHAI_MAIL_SUBJECT_PREFIX = '[scratchai]'

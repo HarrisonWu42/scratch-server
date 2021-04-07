@@ -48,9 +48,11 @@ def register():
         password = form.password.data
         user = User(name=name, email=email)
         user.set_password(password)
+        print(name)
         db.session.add(user)
         db.session.commit()
         token = generate_token(user=user, operation='confirm')
+        print("send email:-----------------------------")
         send_confirm_email(user=user, token=token)
         flash('Confirm email sent, check your inbox.', 'info')
         # return redirect(url_for('.login'))
