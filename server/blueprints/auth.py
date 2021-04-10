@@ -17,7 +17,7 @@ from server.settings import Operations
 from server.utils import generate_token, validate_token, redirect_back
 
 auth_bp = Blueprint('auth', __name__)
-CORS(auth_bp)
+
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
