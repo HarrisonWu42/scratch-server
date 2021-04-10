@@ -59,10 +59,14 @@ def logout():
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
-    if current_user.is_authenticated:
-        return jsonify(code=302, message="redirect to main page.")
+    # if current_user.is_authenticated:
+    #     return jsonify(code=302, message="redirect to main page.")
 
     form = RegisterForm()
+
+    user = User.query.filter_by(email=form.email.data.lower()).first()
+    if user is not None:
+        return jsonify(code=302, message="user already exist.")
 
     name = form.name.data
     email = form.email.data.lower()
@@ -79,7 +83,7 @@ def register():
     token = generate_token(user=user, operation='confirm')
 
     send_confirm_email(user=user, token=token)
-    flash('Confirm emails sent, check your inbox.', 'info')
+    # flash('Confirm emails sent, check your inbox.', 'info')
     return jsonify(code=303, message="redirect to login page.", data={"id": id})
 
 

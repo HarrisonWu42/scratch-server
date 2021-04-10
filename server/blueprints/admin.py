@@ -7,10 +7,9 @@
 
 
 from flask import Blueprint
-from flask_cors import CORS
+
 
 admin_bp = Blueprint('admin', __name__)
-
 
 
 @admin_bp.route('/emails')
