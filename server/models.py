@@ -85,7 +85,7 @@ class User(db.Model, UserMixin):
 
 	def set_role(self):
 		if self.role is None:
-			if self.email == current_app.config['ALBUMY_ADMIN_EMAIL']:
+			if self.email == current_app.config['ADMIN_EMAIL']:
 				self.role = Role.query.filter_by(name='Administrator').first()
 			else:
 				self.role = Role.query.filter_by(name='User').first()

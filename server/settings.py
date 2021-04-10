@@ -20,7 +20,7 @@ class Operations:
 
 
 # 'mysql+pymysql://用户名称:密码@localhost:端口/数据库名称'
-SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost:3306/testdb'
+SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost:3306/scratchai'
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 
@@ -32,6 +32,7 @@ MAIL_PORT = 465
 MAIL_USE_SSL = True
 MAIL_USE_TLS = False
 MAIL_USERNAME = 'hangzhouwh@qq.com'
+ADMIN_EMAIL = MAIL_USERNAME
 MAIL_PASSWORD = 'amzzvffdquulbgbi'  # qq邮箱授权码
 MAIL_DEFAULT_SENDER = ('ScratchAi Admin', MAIL_USERNAME)
 SCRATCHAI_MAIL_SUBJECT_PREFIX = '[scratchai]'
