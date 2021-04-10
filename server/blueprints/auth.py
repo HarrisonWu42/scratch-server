@@ -72,15 +72,17 @@ def register():
     db.session.add(user)
     db.session.commit()
 
+    user = User.query.filter_by(email=form.email.data.lower()).first()
+    id = user.id
+
     token = generate_token(user=user, operation='confirm')
 
     send_confirm_email(user=user, token=token)
     flash('Confirm emails sent, check your inbox.', 'info')
-    return jsonify(code=303, message="redirect to login page.")
+    return jsonify(code=303, message="redirect to login page.", data={"id": id})
 
 
 @auth_bp.route('/confirm/<token>')
-@login_required
 def confirm(token):
     if current_user.confirmed:
         return jsonify(code=204, message="Account confirmed.")
