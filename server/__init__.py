@@ -23,7 +23,7 @@ def create_app(config_name=None):
     #     config_name = os.getenv('FLASK_CONFIG', 'development')
 
     app = Flask('server')
-    CORS(app, supports_credentials=True, resources=r'/*')
+    CORS(app, supports_credentials=True, resources=r'/*', methods=['GET', 'POST'])
     app.config.from_pyfile('settings.py')
 
     register_logging(app)  # 注册日志处理器
