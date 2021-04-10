@@ -9,8 +9,8 @@
 import os
 
 from flask import Flask
+from flask_cors import CORS
 from flask_login import current_user
-
 from server.blueprints.auth import auth_bp
 from server.blueprints.admin import admin_bp
 from server.blueprints.home import home_bp
@@ -23,6 +23,7 @@ def create_app(config_name=None):
     #     config_name = os.getenv('FLASK_CONFIG', 'development')
 
     app = Flask('server')
+    CORS(app, supports_credentials=True)
     app.config.from_pyfile('settings.py')
 
     register_logging(app)  # 注册日志处理器
