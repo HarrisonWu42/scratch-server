@@ -7,7 +7,7 @@
 
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField, IntegerField
 from wtforms.validators import DataRequired, Length
 
 
@@ -15,3 +15,9 @@ class TaskForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
     answer_video_url = StringField('Answer Video Url', validators=[DataRequired(), Length(1, 120)])
     submit = SubmitField()
+
+
+class DeleteTaskForm(FlaskForm):
+    id = IntegerField('Id')
+    submit = SubmitField()
+

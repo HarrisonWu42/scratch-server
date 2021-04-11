@@ -4,25 +4,27 @@
 # @Email: hangzhouwh@gmail.com
 # @File : task.py
 # @Software: PyCharm
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 
 from server.extensions import db
-from server.forms.task import TaskForm
+from server.forms.task import TaskForm, DeleteTaskForm
 from server.models import Task
+from server.utils import tasks2json
 
 task_bp = Blueprint('task', __name__)
 
 
 # 显示所有任务
-@task_bp.route('/all', methods=['GET'])
-def show_tasks():
-	tasks = Task.query.all()
-	json_array = []
-	for task in tasks:
-		task_obj = {"id": task.id, "name": task.name, "answer_video_url": task.answer_video_url}
-		json_array.append(task_obj)
+@task_bp.route('/all/<offset>/<per_page>', methods=['GET'])
+def show_tasks(offset, per_page):
+	per_page = int(per_page)
+	offset = int(offset)
 
-	return jsonify(code=200, data={"tasks": json_array})
+	tasks = Task.query.limit(per_page).offset((offset - 1) * per_page)
+
+	data = tasks2json(tasks)
+
+	return jsonify(code=200, data=data)
 
 
 # 发布任务
@@ -41,26 +43,43 @@ def add():
 	id = task.id
 
 	return jsonify(code=200, message="Add task success.", data={"id": id,
-																"name": name})
+																"name": name,
+																"answer_video_url": answer_video_url})
 
 
-# # 修改任务
-# @task_bp.route('/edit', methods=['POST'])
-# def edit():
-# 	form = TaskForm()
-#
-# 	name = form.name.data
-# 	answer_video_url = form.answer_video_url.data
-#
-# 	task = Task.query.filter_by(name=name).first()
-# 	task.answer_video_url = answer_video_url
-#
-# 	db.commit()
-#
-#
-#
-#
-# # 删除任务
-# @task_bp.route('/delete', methods=['POST', 'GET'])
-# def delete():
-# 	print(11111111111111)
+# 修改任务
+@task_bp.route('/edit', methods=['POST'])
+def edit():
+	form = TaskForm()
+
+	name = form.name.data
+	answer_video_url = form.answer_video_url.data
+
+	task = Task.query.filter_by(name=name).first()
+	id = task.id
+
+	task.answer_video_url = answer_video_url
+
+	db.session.commit()
+
+	return jsonify(code=200, message="Add task success.", data={"id": id,
+																"name": name,
+																"answer_video_url": answer_video_url})
+
+
+# 删除任务
+@task_bp.route('/delete', methods=['POST'])
+def delete():
+	form = DeleteTaskForm()
+
+	id = form.id.data
+
+	task = Task.query.get(id)
+
+	db.session.delete(task)
+	db.session.commit()
+
+	return jsonify(code=200, message="Delete success", data={"id": task.id,
+																"name": task.name,
+																"answer_video_url": task.answer_video_url})
+

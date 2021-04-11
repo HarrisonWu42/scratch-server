@@ -79,11 +79,13 @@ def is_safe_url(target):
     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
 
-def redirect_back(default='main.index', **kwargs):
-    for target in request.args.get('next'), request.referrer:
-        if not target:
-            continue
-        if is_safe_url(target):
-            return redirect(target)
-    return redirect(url_for(default, **kwargs))
+def tasks2json(tasks):
+
+    json_array = []
+    for task in tasks:
+        task_obj = {"id": task.id, "name": task.name, "answer_video_url": task.answer_video_url}
+        json_array.append(task_obj)
+    json_dic = {"tasks": json_array}
+
+    return json_dic
 
