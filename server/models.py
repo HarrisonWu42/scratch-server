@@ -83,7 +83,6 @@ class User(db.Model, UserMixin):
 	def get_id(self):
 		return self.id
 
-
 	def set_password(self, password):
 		self.password_hash = generate_password_hash(password)
 
@@ -140,4 +139,6 @@ class Project(db.Model):
 class Task(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(30), unique=True)
+	answer_video_url = db.Column(db.String(120))
+
 	projects = db.relationship('Project', back_populates='task')
