@@ -1,4 +1,4 @@
-Hello {{ user.username }},
+Hello {{ user.name }},
 
 Please visit the link below to verify your new email address:
 

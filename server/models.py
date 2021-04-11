@@ -80,6 +80,10 @@ class User(db.Model, UserMixin):
 		super(User, self).__init__(**kwargs)
 		self.set_role()
 
+	def get_id(self):
+		return self.id
+
+
 	def set_password(self, password):
 		self.password_hash = generate_password_hash(password)
 

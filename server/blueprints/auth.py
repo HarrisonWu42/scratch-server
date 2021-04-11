@@ -6,34 +6,47 @@
 # @Software: PyCharm
 
 
-from flask import flash, redirect, url_for, Blueprint, make_response, jsonify
+from flask import flash, redirect, url_for, Blueprint, make_response, jsonify, request
 from flask_cors import CORS
 from flask_login import login_user, logout_user, login_required, current_user, login_fresh, confirm_login
 from server.emails import send_confirm_email, send_reset_password_email
 from server.extensions import db
-from server.forms.auth import RegisterForm, LoginForm
+from server.forms.auth import RegisterForm, LoginForm, ForgetPasswordForm, ResetPasswordForm
 from server.models import User
 from server.settings import Operations
-from server.utils import generate_token, validate_token, redirect_back
-
+from server.utils import generate_token, validate_token, redirect_back, extract_id_from_token
+from server.decorators import confirm_required
 auth_bp = Blueprint('auth', __name__)
 
 
-@auth_bp.route('/login', methods=['POST'])
+@auth_bp.route('/test', methods=['POST', 'GET'])
+@confirm_required
+def test():
+
+    if current_user.is_authenticated():
+        print(2222)
+    print(11111111111111)
+
+
+@auth_bp.route('/login', methods=['POST', 'GET'])
 def login():
-    if current_user.is_authenticated:  # 是否登录
-        return jsonify(code=302, message="redirect to main page.")
+
+    # if current_user.is_authenticated:  # 是否登录
+    #     return jsonify(code=303, message="Redirect to main page.")
 
     form = LoginForm()
 
-    user = User.query.filter_by(email=form.email.data.lower()).first()
-    if user is not None and user.validate_password(form.password.data):
-        if login_user(user):
-            return jsonify(code=200, message='success')
-        else:
-            return jsonify(code=400, message='Your account is blocked, warning!')
+    if form.email.data is not None:
+        user = User.query.filter_by(email=form.email.data.lower()).first()
+        if user is not None:
+            if user.validate_password(form.password.data):
+                if login_user(user):
+                    return jsonify(code=200, message='Login success.')
+                else:
+                    return jsonify(code=400, message='Error, your account is blocked.')
+            return jsonify(code=400, message='Error, invalid emails or password.')
 
-    return jsonify(code=400, message='Invalid emails or password, warning!')
+    return jsonify(code=302, message='Redirect to login page.')
 
 
 # @auth_bp.route('/re-authenticate', methods=['GET', 'POST'])
@@ -49,24 +62,23 @@ def login():
 #     # return render_template('auth/login.html', form=form)
 
 
-@auth_bp.route('/logout')
+@auth_bp.route('/logout', methods=['POST'])
 @login_required
 def logout():
     logout_user()
-    flash('Logout success.', 'info')
-    return redirect(url_for('main.index'))
+    return jsonify(code=200, message='Logout success.')
 
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
-    # if current_user.is_authenticated:
-    #     return jsonify(code=302, message="redirect to main page.")
+    if current_user.is_authenticated:
+        return jsonify(code=303, message="redirect to main page.")
 
     form = RegisterForm()
 
     user = User.query.filter_by(email=form.email.data.lower()).first()
     if user is not None:
-        return jsonify(code=302, message="user already exist.")
+        return jsonify(code=401, message="User already exist.")
 
     name = form.name.data
     email = form.email.data.lower()
@@ -83,16 +95,68 @@ def register():
     token = generate_token(user=user, operation='confirm')
 
     send_confirm_email(user=user, token=token)
-    # flash('Confirm emails sent, check your inbox.', 'info')
-    return jsonify(code=303, message="redirect to login page.", data={"id": id})
+
+    return jsonify(code=302, message="Redirect to login page.", data={"id": id})
 
 
-@auth_bp.route('/confirm/<token>')
+@auth_bp.route('/confirm/<token>', methods=['POST', 'GET'])
 def confirm(token):
+    # 为什么current_user始终时游客状态？？？
     if current_user.confirmed:
-        return jsonify(code=204, message="Account confirmed.")
+        return jsonify(code=303, message="Redirect to main page.")
 
-    if validate_token(user=current_user, token=token, operation=Operations.CONFIRM):
-        return jsonify(code=200, message="Account confirmed, success")
+    user_id = extract_id_from_token(token)
+    user = User.query.filter_by(id=user_id).first()
+
+    if user.confirmed:  # 已经确认过了，直接返回主页就可以了
+        return jsonify(code=303, message="Redirect to main page.")
+
+    if validate_token(user=user, token=token, operation=Operations.CONFIRM):
+        return jsonify(code=200, message="Confirm success")
     else:
-        return jsonify(code=400, message="Invalid or expired token, fail")
+        return jsonify(code=400, message="Error, invalid or expired token")
+
+
+@auth_bp.route('/resend-confirm-email')
+@login_required
+def resend_confirm_email():
+    if current_user.confirmed:
+        return jsonify(code=303, message="Redirect to main page.")
+
+    token = generate_token(user=current_user, operation=Operations.CONFIRM)
+    send_confirm_email(user=current_user, token=token)
+    return jsonify(code=303, message="Redirect to main page.")
+
+
+@auth_bp.route('/forget-password', methods=['GET', 'POST'])
+def forget_password():
+    if current_user.is_authenticated:
+        return jsonify(code=303, message="Redirect to main page.")
+
+    form = ForgetPasswordForm()
+    if form.email.data is not None:
+        user = User.query.filter_by(email=form.email.data.lower()).first()
+        if user:
+            token = generate_token(user=user, operation=Operations.RESET_PASSWORD)
+            send_reset_password_email(user=user, token=token)
+            return jsonify(code=302, message="Redirect to login page.")
+        return jsonify(code=304, message="Redirect to forget_password page.", flash="Invalid email.")
+    return jsonify(code=305, message="Redirect to reset_password page.")
+
+
+@auth_bp.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return jsonify(code=303, message="Redirect to main page.")
+
+    form = ResetPasswordForm()
+    if form.email.data is not None:
+        user = User.query.filter_by(email=form.email.data.lower()).first()
+        if user is None:
+            return redirect(url_for('main.index'))
+        if validate_token(user=user, token=token, operation=Operations.RESET_PASSWORD,
+                          new_password=form.password.data):
+            return jsonify(code=302, message="Redirect to login page.", flash="Password updated success.")
+        else:
+            return jsonify(code=305, message="Redirect to forget_password page.", flash="Invalid or expired link.")
+    return jsonify(code=305, message="Redirect to reset_password page.", form=form.data)

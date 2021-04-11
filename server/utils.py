@@ -60,6 +60,19 @@ def validate_token(user, token, operation, new_password=None):
     return True
 
 
+def extract_id_from_token(token):
+    s = Serializer(current_app.config['SECRET_KEY'])
+
+    try:
+        data = s.loads(token)
+    except (SignatureExpired, BadSignature):
+        return False
+
+    id = data.get('id')
+
+    return id
+
+
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))

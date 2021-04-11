@@ -24,7 +24,7 @@ def create_app(config_name=None):
 
     app = Flask('server')
     CORS(app, supports_credentials=True)
-    # cors = CORS(app, resources={r"/*": {"origins": "*"}})
+
     app.config.from_pyfile('settings.py')
 
     register_logging(app)  # 注册日志处理器
@@ -53,5 +53,5 @@ def register_blueprints(app):
 def regitser_shell_context(app):
     @app.shell_context_processor
     def make_shell_context():
-        return dict(db=db)
+        return dict(db=db, User=User)
 
