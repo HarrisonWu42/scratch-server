@@ -95,8 +95,9 @@ def register():
     id = user.id
 
     token = generate_token(user=user, operation='confirm')
+    url = "http://localhost:8080/#" + url_for(endpoint='auth.confirm', token=token)
 
-    send_confirm_email(user=user, token=token)
+    send_confirm_email(user=user, url=url)
 
     return jsonify(code=302, message="Redirect to login page.", data={"id": id})
 
@@ -126,7 +127,9 @@ def resend_confirm_email():
         return jsonify(code=303, message="Redirect to main page.")
 
     token = generate_token(user=current_user, operation=Operations.CONFIRM)
-    send_confirm_email(user=current_user, token=token)
+    url = "http://localhost:8080/#" + url_for(endpoint='auth.confirm', token=token)
+
+    send_confirm_email(user=current_user, url=url)
     return jsonify(code=303, message="Redirect to main page.")
 
 
@@ -140,7 +143,9 @@ def forget_password():
         user = User.query.filter_by(email=form.email.data.lower()).first()
         if user:
             token = generate_token(user=user, operation=Operations.RESET_PASSWORD)
-            send_reset_password_email(user=user, token=token)
+            url = "http://localhost:8080/#" + url_for(endpoint='auth.reset_password', token=token)
+
+            send_reset_password_email(user=user, url=url)
             return jsonify(code=302, message="Redirect to login page.")
         return jsonify(code=304, message="Redirect to forget_password page.", flash="Invalid email.")
     return jsonify(code=305, message="Redirect to reset_password page.")

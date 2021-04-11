@@ -28,12 +28,12 @@ def send_mail(to, subject, template, **kwargs):
     return thr
 
 
-def send_confirm_email(user, token, to=None):
-    send_mail(subject='Email Confirm', to=to or user.email, template='emails/confirm', user=user, token=token)
+def send_confirm_email(user, url, to=None):
+    send_mail(subject='Email Confirm', to=to or user.email, template='emails/confirm', user=user, url=url)
 
 
-def send_reset_password_email(user, token):
-    send_mail(subject='Password Reset', to=user.email, template='emails/reset_password', user=user, token=token)
+def send_reset_password_email(user, url):
+    send_mail(subject='Password Reset', to=user.email, template='emails/reset_password', user=user, url=url)
 
 
 def send_change_email_email(user, token, to=None):

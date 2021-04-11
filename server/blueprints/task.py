@@ -17,9 +17,12 @@ task_bp = Blueprint('task', __name__)
 @task_bp.route('/all', methods=['GET'])
 def show_tasks():
 	tasks = Task.query.all()
+	json_array = []
+	for task in tasks:
+		task_obj = {"id": task.id, "name": task.name, "answer_video_url": task.answer_video_url}
+		json_array.append(task_obj)
 
-
-	return jsonify(code=200)
+	return jsonify(code=200, data={"tasks": json_array})
 
 
 # 发布任务
