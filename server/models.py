@@ -25,6 +25,11 @@ users_groups = db.Table('users_groups',
 						db.Column('group_id', db.Integer, db.ForeignKey('group.id'))
 						)
 
+groups_tasks = db.Table('groups_tasks',
+						db.Column('group_id', db.Integer, db.ForeignKey('group.id')),
+						db.Column('task_id', db.Integer, db.ForeignKey('task.id'))
+						)
+
 
 class Permission(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -114,6 +119,7 @@ class Group(db.Model):
 	teacher_id = db.Column(db.Integer, index=True)
 
 	users = db.relationship('User', secondary=users_groups, back_populates='groups')
+	tasks = db.relationship('Task', secondary=groups_tasks, back_populates='groups')
 
 
 class Project(db.Model):
@@ -142,3 +148,4 @@ class Task(db.Model):
 	answer_video_url = db.Column(db.String(120))
 
 	projects = db.relationship('Project', back_populates='task')
+	groups = db.relationship('Group', secondary=groups_tasks, back_populates='tasks')

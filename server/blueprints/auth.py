@@ -15,6 +15,7 @@ from server.models import User
 from server.settings import Operations
 from server.utils import generate_token, validate_token, extract_id_from_token
 from server.decorators import confirm_required
+
 auth_bp = Blueprint('auth', __name__)
 
 
@@ -155,7 +156,7 @@ def reset_password(token):
     if form.email.data is not None:
         user = User.query.filter_by(email=form.email.data.lower()).first()
         if user is None:
-            return redirect(url_for('main.index'))
+            return jsonify(code=302, message="Redirect to reset_password page.", flash="Invalid email.")
         if validate_token(user=user, token=token, operation=Operations.RESET_PASSWORD,
                           new_password=form.password.data):
             return jsonify(code=302, message="Redirect to login page.", flash="Password updated success.")
