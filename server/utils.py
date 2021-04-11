@@ -89,3 +89,32 @@ def tasks2json(tasks):
 
     return json_dic
 
+
+def groups2json(groups):
+
+    json_array = []
+    for group in groups:
+        group_obj = {"id": group.id,
+                     "name": group.name,
+                     "description": group.description,
+                     "type": group.type,
+                     "teacher_id": group.teacher_id,
+                     "invite_code": group.invite_code}
+        json_array.append(group_obj)
+    json_dic = {"groups": json_array}
+
+    return json_dic
+
+
+def users2json(users):
+
+    json_array = []
+    for user in users:
+        user_obj = {"id": user.id,
+                     "name": user.name,
+                     "email": user.email}
+        json_array.append(user_obj)
+    json_dic = {"students": json_array}
+
+    return json_dic
+

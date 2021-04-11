@@ -14,7 +14,7 @@ from server.extensions import db
 from server.forms.user import EditNameForm, ChangeEmailForm, ChangePasswordForm
 from server.models import User
 from server.settings import Operations
-from server.utils import generate_token, validate_token, redirect_back
+from server.utils import generate_token, validate_token
 
 user_bp = Blueprint('user', __name__)
 

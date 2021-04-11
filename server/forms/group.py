@@ -7,19 +7,35 @@
 
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, HiddenField, ValidationError
+from wtforms import StringField, IntegerField, SubmitField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, Optional, Regexp
 
 
 class GroupForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
     description = TextAreaField('Description', validators=[DataRequired(), Length(1, 254)])
-    type = BooleanField('Open')
-    teacher_name = StringField('TeacherName', validators=[DataRequired(), Length(1, 30)])
+    teacher_id = IntegerField('TeacherId')
     submit = SubmitField()
 
 
 class EditGroupForm(FlaskForm):
+    id = IntegerField('Id')
     name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
     description = TextAreaField('Description', validators=[DataRequired(), Length(1, 254)])
+    submit = SubmitField()
+
+
+class CloseGroupForm(FlaskForm):
+    id = IntegerField('Id')
+    submit = SubmitField()
+
+
+class DeleteGroupForm(FlaskForm):
+    id = IntegerField('Id')
+    submit = SubmitField()
+
+
+class InviteGroupForm(FlaskForm):
+    user_id = IntegerField('user_id')
+    invite_code = StringField('invite_code', validators=[DataRequired(), Length(6, 6)])
     submit = SubmitField()

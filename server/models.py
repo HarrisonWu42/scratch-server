@@ -113,10 +113,12 @@ class User(db.Model, UserMixin):
 
 class Group(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
-	username = db.Column(db.String(20), unique=True, index=True)
+	name = db.Column(db.String(20), unique=True, index=True)
 	description = db.Column(db.String(80))
-	type = db.Column(db.String(5), unique=True, index=True)
+	type = db.Column(db.String(5), index=True)
 	teacher_id = db.Column(db.Integer, index=True)
+
+	invite_code = db.Column(db.String(6), unique=True)
 
 	users = db.relationship('User', secondary=users_groups, back_populates='groups')
 	tasks = db.relationship('Task', secondary=groups_tasks, back_populates='groups')
