@@ -4,3 +4,14 @@
 # @Email: hangzhouwh@gmail.com
 # @File : task.py
 # @Software: PyCharm
+
+
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired, Length
+
+
+class TaskForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
+    answer_video_url = StringField('Answer Video Url', validators=[DataRequired(), Length(1, 120)])
+    submit = SubmitField()

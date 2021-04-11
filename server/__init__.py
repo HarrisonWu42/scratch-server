@@ -14,6 +14,7 @@ from flask_login import current_user
 from server.blueprints.auth import auth_bp
 from server.blueprints.admin import admin_bp
 from server.blueprints.home import home_bp
+from server.blueprints.task import task_bp
 from server.extensions import db, mail, moment, login_manager
 from server.models import User
 
@@ -46,8 +47,9 @@ def register_extensions(app):
 
 
 def register_blueprints(app):
-    app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(home_bp, url_prefix='/home')
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(task_bp, url_prefix='/task')
 
 
 def regitser_shell_context(app):

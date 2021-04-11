@@ -22,7 +22,6 @@ auth_bp = Blueprint('auth', __name__)
 @auth_bp.route('/test', methods=['POST', 'GET'])
 @confirm_required
 def test():
-
     if current_user.is_authenticated():
         print(2222)
     print(11111111111111)
@@ -104,9 +103,9 @@ def register():
 
 @auth_bp.route('/confirm/<token>', methods=['POST', 'GET'])
 def confirm(token):
-    # 为什么current_user始终时游客状态？？？
-    if current_user.confirmed:
-        return jsonify(code=303, message="Redirect to main page.")
+    # # 为什么current_user始终时游客状态？？？
+    # if current_user.confirmed:
+    #     return jsonify(code=303, message="Redirect to main page.")
 
     user_id = extract_id_from_token(token)
     user = User.query.filter_by(id=user_id).first()
