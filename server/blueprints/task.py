@@ -4,11 +4,13 @@
 # @Email: hangzhouwh@gmail.com
 # @File : task.py
 # @Software: PyCharm
+import json
+
 from flask import Blueprint, jsonify, request
 
 from server.extensions import db
-from server.forms.task import TaskForm, DeleteTaskForm, EditTaskForm
-from server.models import Task
+from server.forms.task import AddTaskForm, EditTaskForm, DeleteTaskForm
+from server.models import Task, Group
 from server.utils import tasks2json
 
 task_bp = Blueprint('task', __name__)
@@ -49,7 +51,7 @@ def show_taskset(offset, per_page):
 # 发布任务
 @task_bp.route('/add', methods=['POST'])
 def add():
-	form = TaskForm()
+	form = AddTaskForm()
 
 	name = form.name.data
 	answer_video_url = form.answer_video_url.data
@@ -103,3 +105,24 @@ def delete():
 																"name": task.name,
 																"answer_video_url": task.answer_video_url})
 
+
+# 为某个班组（任务集）选择任务
+@task_bp.route('/assign', methods=['POST'])
+def assign():
+	data = json.loads(bytes.decode(request.data))
+	group_id = data["group_id"]
+	task_id_list = data['tasks']
+
+	group = Group.query.get(group_id)
+	for task_id in task_id_list:
+		task = Task.query.get(task_id)
+		group.tasks.append(task)
+
+	db.session.commit()
+
+	tasks = group.tasks
+	data = tasks2json(tasks)
+	data['group_id'] = group.id
+	data['group_name'] = group.name
+
+	return jsonify(code=200, message="Assign success.", data=data)

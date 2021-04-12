@@ -117,4 +117,3 @@ def users2json(users):
     json_dic = {"students": json_array}
 
     return json_dic
-
