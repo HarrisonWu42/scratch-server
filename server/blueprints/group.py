@@ -39,7 +39,7 @@ def show_students(group_id, offset, per_page):
 
 	group = Group.query.get(id)
 	users = group.users  # 所有users
-	users = users[(offset-1)*per_page:offset*per_page]  # 根据分页取的
+	users = users[(offset-1) * per_page: offset * per_page]  # 根据分页取的
 
 	data = users2json(users)
 

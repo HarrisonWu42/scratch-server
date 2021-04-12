@@ -10,8 +10,9 @@ from flask import Blueprint, jsonify, request
 
 from server.extensions import db
 from server.forms.task import AddTaskForm, EditTaskForm, DeleteTaskForm
-from server.models import Task, Group
-from server.utils import tasks2json
+from server.models import Task, Group, User
+from server.utils import tasks2json, groups2json
+from math import ceil
 
 task_bp = Blueprint('task', __name__)
 
@@ -36,14 +37,29 @@ def show_tasks(offset, per_page):
 
 
 # 显示任务集
-@task_bp.route('/<offset>/<per_page>', methods=['GET'])
-def show_taskset(offset, per_page):
-	per_page = int(per_page)
+@task_bp.route('/taskset/<id>/<offset>/<page_size>', methods=['GET'])
+def show_taskset(id, offset, page_size):
+	page_size = int(page_size)
 	offset = int(offset)
 
-	tasks = Task.query.limit(per_page).offset((offset - 1) * per_page)
+	# 固定任务集
+	common_taskset = Group.query.filter_by(type=2).all()
 
-	data = tasks2json(tasks)
+	# 个人任务集
+	user = User.query.get(id)
+	user_tasksets = user.groups
+
+	tasksets = common_taskset + user_tasksets
+
+	page_tasksets = tasksets[(offset-1) * page_size: offset * page_size]
+
+	# 总页数
+	total_pages = ceil((len(page_tasksets) + page_size - 1) / page_size)
+
+	data = groups2json(page_tasksets)
+	data['total_pages'] = total_pages
+	data['user_id'] = user.id
+	data['user_name'] = user.name
 
 	return jsonify(code=200, data=data)
 

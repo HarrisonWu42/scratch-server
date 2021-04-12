@@ -7,6 +7,7 @@
 | 修改题目 | POST | http://localhost:5000/task/edit
 | 删除题目 | POST | http://localhost:5000/task/delete|
 | 为班组/题目集分配题目| POST | http://localhost:5000/task/assign
+| 显示题目集| GET | http://localhost:5000/task/taskset/<id>/<offset>/<page_size>
 
 ## 显示所有题目
 - 请求参数
@@ -104,6 +105,7 @@
     ```
   
   
+
 ## 为班组/题目集分配题目
 - 请求参数
     
@@ -133,5 +135,43 @@
             ]
         },
         "message": "Assign success."
+    }
+    ```
+  
+## 显示题目集
+- 请求参数
+    | 参数名 | 类型| 说明 |
+    | :-----| :---- | :---- |
+    | id | int | 用户ID
+    | offset | int | 
+    | page_size | int |
+
+- 返回参数
+    ```
+    {
+        "code": 200,
+        "data": {
+            "groups": [
+                {
+                    "description": "固定题目集",
+                    "id": 7,
+                    "invite_code": "653123",
+                    "name": "固定题目集1",
+                    "teacher_id": 1,
+                    "type": 2
+                },
+                {
+                    "description": "xxx",
+                    "id": 1,
+                    "invite_code": "084795",
+                    "name": "1班",
+                    "teacher_id": 1,
+                    "type": 1
+                }
+            ],
+            "total_pages": 2,
+            "user_id": 2,
+            "user_name": "teacher1"
+        }
     }
     ```

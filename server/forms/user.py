@@ -7,14 +7,14 @@
 
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, ValidationError, IntegerField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
 from server.models import User
 
 
-class EditNameForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
+class EditUserForm(FlaskForm):
+    id = IntegerField('id')
     submit = SubmitField()
 
 
