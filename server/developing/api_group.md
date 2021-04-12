@@ -7,6 +7,9 @@
 | 删除班组 | POST | http://localhost:5000/group/delete
 | 关闭班组 | POST | http://localhost:5000/group/close
 | 邀请用户加入班组 | POST | http://localhost:5000/group/invite
+| 把某人提出某班| POST | http://localhost:5000/group/kick
+| 显示某个老师的班组| GET | http://localhost:5000/group/teacher/<teacher_id>/<offset>/<per_page>
+| 显示某个班组的所有学生| GET | http://localhost:5000/group/<group_id>/<offset>/<per_page>
 
 
 ## 创建班组
@@ -108,6 +111,7 @@
     }
     ```
   
+
 ## 邀请用户加入班组
 - 请求参数
 
@@ -128,5 +132,108 @@
             "user_name": "wuhao3"
         },
         "message": "Invite success."
+    }
+    ```
+  
+  
+  
+
+
+{
+    "code": 200,
+    "data": {
+        "email": "2554612590@qq.com",
+        "group_id": 2,
+        "group_name": "2班",
+        "user_id": 4,
+        "user_name": "wuhao4"
+    },
+    "message": "Invite success."
+}
+
+## 把某人提出某班组
+- 请求参数
+    
+    | 参数名 | 类型| 说明 |
+    | :-----| :---- | :---- |
+    | user_id | int | 
+    | group_id | int |
+    
+- 返回参数
+    ``` 
+    {
+        "code": 200,
+        "data": {
+            "email": "2554612590@qq.com",
+            "group_id": 2,
+            "group_name": "2班",
+            "user_id": 4,
+            "user_name": "wuhao4"
+        },
+        "message": "Invite success."
+    }
+    ```
+
+## 显示某个老师的班组
+- 请求参数
+    
+    | 参数名 | 类型| 说明 |
+    | :-----| :---- | :---- |
+    | teacher_id | int | 
+    | offset | int |
+    | per_page | int |
+    
+- 返回参数
+    ``` 
+    {
+        "code": 200,
+        "data": {
+            "groups": [
+                {
+                    "description": "xxx",
+                    "id": 1,
+                    "invite_code": "084795",
+                    "name": "1班",
+                    "teacher_id": 1,
+                    "type": "1"
+                }
+            ]
+        }
+    }
+    ```
+ 
+
+## 显示某个班组的所有学生
+- 请求参数
+    
+    | 参数名 | 类型| 说明 |
+    | :-----| :---- | :---- |
+    | group_id | int | 
+    | offset | int |
+    | per_page | int |
+    
+- 返回参数
+    ``` 
+    {
+        "code": 200,
+        "data": {
+            "students": [
+                {
+                    "email": "2554612592@qq.com",
+                    "id": 2,
+                    "name": "wuhao2"
+                },
+                {
+                    "email": "2554612591@qq.com",
+                    "id": 3,
+                    "name": "wuhao3"
+                },
+                {
+                    "email": "2554612590@qq.com",
+                    "id": 4,
+                    "name": "wuhao4"
+                }
+            ]
+        }
     }
     ```

@@ -18,22 +18,22 @@ group_bp = Blueprint('group', __name__)
 
 
 # 显示某个老师的班组
-@group_bp.route('/teacher/<id>/<offset>/<per_page>', methods=['GET'])
-def show_tasks(id, offset, per_page):
-	id = int(id)
+@group_bp.route('/teacher/<teacher_id>/<offset>/<per_page>', methods=['GET'])
+def show_tasks(teacher_id, offset, per_page):
+	id = int(teacher_id)
 	per_page = int(per_page)
 	offset = int(offset)
 
-	groups = Group.query.filter_by(teacher_id=id).limit(per_page).offset((offset-1) * per_page)
+	groups = Group.query.filter_by(teacher_id=id).limit(per_page).offset((offset-1)*per_page)
 	data = groups2json(groups)
 
 	return jsonify(code=200, data=data)
 
 
 # 显示某个班组的所有学生
-@group_bp.route('/<id>/<offset>/<per_page>', methods=['GET'])
-def show_students(id, offset, per_page):
-	id = int(id)
+@group_bp.route('/<group_id>/<offset>/<per_page>', methods=['GET'])
+def show_students(group_id, offset, per_page):
+	id = int(group_id)
 	per_page = int(per_page)
 	offset = int(offset)
 
@@ -168,14 +168,14 @@ def kick():
 	user_id = form.user_id.data
 	group_id = form.group_id.data
 
-	# group = Group.query.filter_by(invite_code=invite_code).first()
-	# user = User.query.get(user_id)
-	# group.users.append(user)
-	#
-	# db.session.commit()
-	#
-	# return jsonify(code=200, message="Invite success.", data={"user_id": user.id,
-	# 															"user_name": user.name,
-	# 															"email": user.email,
-	# 															"group_id": group.id,
-	# 															"group_name": group.name})
+	group = Group.query.get(group_id)
+	user = User.query.get(user_id)
+	group.users.remove(user)
+
+	db.session.commit()
+
+	return jsonify(code=200, message="Invite success.", data={"user_id": user.id,
+																"user_name": user.name,
+																"email": user.email,
+																"group_id": group.id,
+																"group_name": group.name})
