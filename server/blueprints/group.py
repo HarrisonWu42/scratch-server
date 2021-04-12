@@ -68,7 +68,7 @@ def add():
 
 	group = Group.query.filter_by(name=name).first()
 
-	return jsonify(code=200, message="Add task success.", data={"id": group.id,
+	return jsonify(code=200, message="Add success.", data={"id": group.id,
 																"name": group.name,
 																"description": group.description,
 																"type": group.type,
@@ -92,7 +92,27 @@ def edit():
 
 	db.session.commit()
 
-	return jsonify(code=200, message="Add task success.", data={"id": group.id,
+	return jsonify(code=200, message="Edit success.", data={"id": group.id,
+																"name": group.name,
+																"description": group.description,
+																"type": group.type,
+																"teacher_id": group.teacher_id,
+																"invite_code": group.invite_code})
+
+
+# 删除班组
+@group_bp.route('/delete', methods=['POST'])
+def delete():
+	form = DeleteGroupForm()
+
+	id = form.id.data
+
+	group = Group.query.get(id)
+
+	db.session.delete(group)
+	db.session.commit()
+
+	return jsonify(code=200, message="Delete success.", data={"id": group.id,
 																"name": group.name,
 																"description": group.description,
 																"type": group.type,
@@ -113,27 +133,7 @@ def close():
 
 	db.session.commit()
 
-	return jsonify(code=200, message="Add task success.", data={"id": group.id,
-																"name": group.name,
-																"description": group.description,
-																"type": group.type,
-																"teacher_id": group.teacher_id,
-																"invite_code": group.invite_code})
-
-
-# 删除班组
-@group_bp.route('/delete', methods=['POST'])
-def delete():
-	form = DeleteGroupForm()
-
-	id = form.id.data
-
-	group = Group.query.get(id)
-
-	db.session.delete(group)
-	db.session.commit()
-
-	return jsonify(code=200, message="Delete success", data={"id": group.id,
+	return jsonify(code=200, message="Close success.", data={"id": group.id,
 																"name": group.name,
 																"description": group.description,
 																"type": group.type,

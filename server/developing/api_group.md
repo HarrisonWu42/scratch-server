@@ -20,7 +20,7 @@
     
 - 返回参数
     ``` 
-      {
+    {
         "code": 200,
         "data": {
             "description": "xxx",
@@ -30,7 +30,7 @@
             "teacher_id": 2,
             "type": "1"
         },
-        "message": "Add task success."
+        "message": "Add success."
     }
     ```
 
@@ -41,39 +41,92 @@
     | :-----| :---- | :---- |
     | id | int | 
     | name | string | 
-    | answer_video_url | string | 
+    | description | text | 
 
 - 返回参数
-
     ```
     {
         "code": 200,
         "data": {
-            "answer_video_url": "www.123.com",
-            "id": 5,
-            "name": "第x课"
+            "description": "abbb",
+            "id": 4,
+            "invite_code": "793854",
+            "name": "A班",
+            "teacher_id": 2,
+            "type": "1"
         },
-        "message": "Add task success."
+        "message": "Edit success."
     }
-    ```
+    ``` 
   
-## 删除题目
+
+## 删除班组
 - 请求参数
-    
+
     | 参数名 | 类型| 说明 |
     | :-----| :---- | :---- |
     | id | int | 
 
 - 返回参数
-
     ```
     {
         "code": 200,
         "data": {
-            "answer_video_url": "www.123.com",
-            "id": 5,
-            "name": "第x课"
+            "description": "xxx",
+            "id": 7,
+            "invite_code": "075489",
+            "name": "F班",
+            "teacher_id": 2,
+            "type": "1"
         },
-        "message": "Delete success"
+        "message": "Delete success."
+    }
+    ```
+  
+  
+
+## 关闭班组
+- 请求参数
+
+    | 参数名 | 类型| 说明 |
+    | :-----| :---- | :---- |
+    | id | int | 
+
+- 返回参数
+    ```
+    {
+        "code": 200,
+        "data": {
+            "description": "xxx",
+            "id": 6,
+            "invite_code": "653890",
+            "name": "C班",
+            "teacher_id": 2,
+            "type": "0"
+        },
+        "message": "Close success."
+    }
+    ```
+  
+## 邀请用户加入班组
+- 请求参数
+
+    | 参数名 | 类型| 说明 |
+    | :-----| :---- | :---- |
+    | user_id | int | 
+    | invite_code| string| 六位邀请码：数字字符串
+
+- 返回参数
+    ```
+    {
+        "code": 200,
+        "data": {
+            "email": "2554612591@qq.com",
+            "group_id": 1,
+            "group_name": "1班",
+            "user_id": 3,
+            "user_name": "wuhao3"
+        },
+        "message": "Invite success."
     }
     ```
