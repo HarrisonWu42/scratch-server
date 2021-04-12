@@ -134,22 +134,6 @@
         "message": "Invite success."
     }
     ```
-  
-  
-  
-
-
-{
-    "code": 200,
-    "data": {
-        "email": "2554612590@qq.com",
-        "group_id": 2,
-        "group_name": "2班",
-        "user_id": 4,
-        "user_name": "wuhao4"
-    },
-    "message": "Invite success."
-}
 
 ## 把某人提出某班组
 - 请求参数
