@@ -39,3 +39,9 @@ class InviteGroupForm(FlaskForm):
     user_id = IntegerField('user_id')
     invite_code = StringField('invite_code', validators=[DataRequired(), Length(6, 6)])
     submit = SubmitField()
+
+
+class KickGroupForm(FlaskForm):
+    user_id = IntegerField('user_id')
+    group_id = StringField('group_id')
+    submit = SubmitField()

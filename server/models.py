@@ -120,7 +120,7 @@ class Group(db.Model):
 
 	invite_code = db.Column(db.String(6), unique=True)
 
-	users = db.relationship('User', secondary=users_groups, back_populates='groups', lazy="dynamic")
+	users = db.relationship('User', secondary=users_groups, back_populates='groups')
 	tasks = db.relationship('Task', secondary=groups_tasks, back_populates='groups')
 
 

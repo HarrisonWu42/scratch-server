@@ -8,10 +8,9 @@
 
 import random
 from flask import Blueprint, jsonify, request
-from flask_paginate import Pagination, get_page_parameter
 
 from server.extensions import db
-from server.forms.group import GroupForm, EditGroupForm, CloseGroupForm, DeleteGroupForm, InviteGroupForm
+from server.forms.group import GroupForm, EditGroupForm, CloseGroupForm, DeleteGroupForm, InviteGroupForm, KickGroupForm
 from server.models import Group, User
 from server.utils import groups2json, users2json
 
@@ -31,7 +30,6 @@ def show_tasks(id, offset, per_page):
 	return jsonify(code=200, data=data)
 
 
-# !!!!这个有问题的， group还缺删除某个班组的某个学生
 # 显示某个班组的所有学生
 @group_bp.route('/<id>/<offset>/<per_page>', methods=['GET'])
 def show_students(id, offset, per_page):
@@ -40,8 +38,8 @@ def show_students(id, offset, per_page):
 	offset = int(offset)
 
 	group = Group.query.get(id)
-	users = group.users.limit(per_page).offset((offset - 1) * per_page)
-	users_paginate = users.paginate(per_page=10)
+	users = group.users  # 所有users
+	users = users[(offset-1)*per_page:offset*per_page]  # 根据分页取的
 
 	data = users2json(users)
 
@@ -160,3 +158,24 @@ def invite():
 																"email": user.email,
 																"group_id": group.id,
 																"group_name": group.name})
+
+
+# 删除某个班组的某个学生
+@group_bp.route('/kick', methods=['POST'])
+def kick():
+	form = KickGroupForm()
+
+	user_id = form.user_id.data
+	group_id = form.group_id.data
+
+	# group = Group.query.filter_by(invite_code=invite_code).first()
+	# user = User.query.get(user_id)
+	# group.users.append(user)
+	#
+	# db.session.commit()
+	#
+	# return jsonify(code=200, message="Invite success.", data={"user_id": user.id,
+	# 															"user_name": user.name,
+	# 															"email": user.email,
+	# 															"group_id": group.id,
+	# 															"group_name": group.name})
