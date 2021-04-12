@@ -23,6 +23,7 @@
 | 下载 | SB_DOWNLOAD | 下载当前版本的sb3文件
 | 删除 | SB_DELETE| 删除当前版本的sb3文件
 | 任务 | TASK | 发布、修改、删除任务
+| 班组 | GROUP | 
 
 
 

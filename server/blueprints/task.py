@@ -14,7 +14,7 @@ from server.utils import tasks2json
 task_bp = Blueprint('task', __name__)
 
 
-# 显示所有任务
+# 显示所有任务, 这个接口后面可能还要修改
 @task_bp.route('/all/<offset>/<per_page>', methods=['GET'])
 def show_tasks(offset, per_page):
 	per_page = int(per_page)

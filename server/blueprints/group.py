@@ -8,6 +8,7 @@
 
 import random
 from flask import Blueprint, jsonify, request
+from flask_paginate import Pagination, get_page_parameter
 
 from server.extensions import db
 from server.forms.group import GroupForm, EditGroupForm, CloseGroupForm, DeleteGroupForm, InviteGroupForm
@@ -24,7 +25,7 @@ def show_tasks(id, offset, per_page):
 	per_page = int(per_page)
 	offset = int(offset)
 
-	groups = Group.query.filter_by(teacher_id=id).limit(per_page).offset((offset - 1) * per_page)
+	groups = Group.query.filter_by(teacher_id=id).limit(per_page).offset((offset-1) * per_page)
 	data = groups2json(groups)
 
 	return jsonify(code=200, data=data)
@@ -39,7 +40,9 @@ def show_students(id, offset, per_page):
 	offset = int(offset)
 
 	group = Group.query.get(id)
-	users = group.users.paginate(1, 1, None)
+	users = group.users.limit(per_page).offset((offset - 1) * per_page)
+	users_paginate = users.paginate(per_page=10)
+
 	data = users2json(users)
 
 	return jsonify(code=200, data=data)
