@@ -7,7 +7,7 @@
 from flask import Blueprint, jsonify, request
 
 from server.extensions import db
-from server.forms.task import TaskForm, DeleteTaskForm
+from server.forms.task import TaskForm, DeleteTaskForm, EditTaskForm
 from server.models import Task
 from server.utils import tasks2json
 
@@ -23,6 +23,12 @@ def show_tasks(offset, per_page):
 	tasks = Task.query.limit(per_page).offset((offset - 1) * per_page)
 
 	data = tasks2json(tasks)
+
+	# 提交数
+
+	# 满分数
+
+	# 满分率
 
 	return jsonify(code=200, data=data)
 
@@ -50,14 +56,15 @@ def add():
 # 修改任务
 @task_bp.route('/edit', methods=['POST'])
 def edit():
-	form = TaskForm()
+	form = EditTaskForm()
 
+	id = form.id.data
 	name = form.name.data
 	answer_video_url = form.answer_video_url.data
 
-	task = Task.query.filter_by(name=name).first()
-	id = task.id
+	task = Task.query.get(id)
 
+	task.name = name
 	task.answer_video_url = answer_video_url
 
 	db.session.commit()

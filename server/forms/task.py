@@ -17,7 +17,15 @@ class TaskForm(FlaskForm):
     submit = SubmitField()
 
 
+class EditTaskForm(FlaskForm):
+    id = IntegerField('Id')
+    name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
+    answer_video_url = StringField('Answer Video Url', validators=[DataRequired(), Length(1, 120)])
+    submit = SubmitField()
+
+
 class DeleteTaskForm(FlaskForm):
     id = IntegerField('Id')
     submit = SubmitField()
+
 
