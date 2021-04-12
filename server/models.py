@@ -115,7 +115,7 @@ class Group(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(20), unique=True, index=True)
 	description = db.Column(db.String(80))
-	type = db.Column(db.String(5), index=True)
+	type = db.Column(db.Integer, index=True)  # type=0: 关闭组 type=1: 开放组 type=2: 固定题目集
 	teacher_id = db.Column(db.Integer, index=True)
 
 	invite_code = db.Column(db.String(6), unique=True)

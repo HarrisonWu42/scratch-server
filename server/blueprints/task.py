@@ -33,6 +33,19 @@ def show_tasks(offset, per_page):
 	return jsonify(code=200, data=data)
 
 
+# 显示任务集
+@task_bp.route('/<offset>/<per_page>', methods=['GET'])
+def show_taskset(offset, per_page):
+	per_page = int(per_page)
+	offset = int(offset)
+
+	tasks = Task.query.limit(per_page).offset((offset - 1) * per_page)
+
+	data = tasks2json(tasks)
+
+	return jsonify(code=200, data=data)
+
+
 # 发布任务
 @task_bp.route('/add', methods=['POST'])
 def add():

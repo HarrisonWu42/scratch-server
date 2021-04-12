@@ -59,7 +59,7 @@ def add():
 	while Group.query.filter_by(invite_code=invite_code).first() is not None:
 		invite_code = "".join(item for item in random.sample('0123456789', 6))
 
-	group = Group(name=name, description=description, type=True, teacher_id=teacher_id, invite_code=invite_code)
+	group = Group(name=name, description=description, type=1, teacher_id=teacher_id, invite_code=invite_code)
 
 	db.session.add(group)
 	db.session.commit()
@@ -127,7 +127,7 @@ def close():
 
 	group = Group.query.get(id)
 
-	group.type = False
+	group.type = 0
 
 	db.session.commit()
 
