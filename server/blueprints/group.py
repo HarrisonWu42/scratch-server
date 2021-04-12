@@ -30,7 +30,7 @@ def show_tasks(id, offset, per_page):
 	return jsonify(code=200, data=data)
 
 
-# !!!!这个有问题的
+# !!!!这个有问题的， group还缺删除某个班组的某个学生
 # 显示某个班组的所有学生
 @group_bp.route('/<id>/<offset>/<per_page>', methods=['GET'])
 def show_students(id, offset, per_page):
