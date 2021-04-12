@@ -31,7 +31,7 @@
             "invite_code": "793854",
             "name": "4班",
             "teacher_id": 2,
-            "type": "1"
+            "type": 1
         },
         "message": "Add success."
     }
@@ -56,7 +56,7 @@
             "invite_code": "793854",
             "name": "A班",
             "teacher_id": 2,
-            "type": "1"
+            "type": 1
         },
         "message": "Edit success."
     }
@@ -80,7 +80,7 @@
             "invite_code": "075489",
             "name": "F班",
             "teacher_id": 2,
-            "type": "1"
+            "type": 1
         },
         "message": "Delete success."
     }
@@ -105,7 +105,7 @@
             "invite_code": "653890",
             "name": "C班",
             "teacher_id": 2,
-            "type": "0"
+            "type": 0
         },
         "message": "Close success."
     }
