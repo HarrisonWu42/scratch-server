@@ -3,10 +3,10 @@
 | api | method| url |
 | :-----| :---- | :---- |
 | 创建班组 | POST | http://localhost:5000/group/add
-| 修改题目 | POST | http://localhost:5000/group/edit
-| 删除题目 | POST | http://localhost:5000/group/delete
-| 删除题目 | POST | http://localhost:5000/group/delete
-| 删除题目 | POST | http://localhost:5000/group/delete
+| 修改班组 | POST | http://localhost:5000/group/edit
+| 删除班组 | POST | http://localhost:5000/group/delete
+| 关闭班组 | POST | http://localhost:5000/group/close
+| 邀请用户加入班组 | POST | http://localhost:5000/group/invite
 
 
 ## 创建班组
@@ -20,19 +20,7 @@
     
 - 返回参数
     ``` 
-    ```
- 
-## 发布题目
-- 请求参数
-    
-    | 参数名 | 类型| 说明 |
-    | :-----| :---- | :---- |
-    | name | string | 
-    | answer_video_url | string | 
-
-- 返回参数
-    ```
-    {
+      {
         "code": 200,
         "data": {
             "description": "xxx",
@@ -46,8 +34,7 @@
     }
     ```
 
-
-## 修改题目
+## 修改班组
 - 请求参数
     
     | 参数名 | 类型| 说明 |
