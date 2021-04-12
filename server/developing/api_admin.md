@@ -1,4 +1,4 @@
-# Project
+# Admin
 
 | api | method| url |
 | :-----| :---- | :---- |

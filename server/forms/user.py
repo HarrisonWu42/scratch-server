@@ -13,18 +13,21 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo
 from server.models import User
 
 
-class EditUserForm(FlaskForm):
-    id = IntegerField('id')
+class EditNameForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
     submit = SubmitField()
 
 
 class ChangeEmailForm(FlaskForm):
-    email = StringField('New Email', validators=[DataRequired(), Length(1, 254), Email()])
+    email = StringField('New Email', validators=[DataRequired(), Length(1, 254), Email(), EqualTo('email2')])
+    email2 = StringField('Confirm email', validators=[DataRequired(), Length(1, 254), Email()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(8, 128)])
     submit = SubmitField()
 
     def validate_email(self, field):
         if User.query.filter_by(email=field.data.lower()).first():
             raise ValidationError('The email is already in use.')
+
 
 
 class ChangePasswordForm(FlaskForm):

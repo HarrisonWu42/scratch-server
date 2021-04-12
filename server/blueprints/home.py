@@ -16,9 +16,12 @@ home_bp = Blueprint('home', __name__)
 
 @home_bp.route('/', methods=['GET'])
 def show_datas():
-    user_num = db.session.query(func.count(User.id)).first()
-    project_num = db.session.query(func.count(Project.id)).first()
-    task_num = db.session.query(func.count(Task.id)).first()
-    return jsonify(code=200, data={"user_num": user_num,
+	# user_num = db.session.query(func.count(User.id)).first()
+	user_num = User.query.count()
+	# project_num = db.session.query(func.count(Project.id)).first()
+	project_num = Project.query.count()
+	# task_num = db.session.query(func.count(Task.id)).first()
+	task_num = Task.query.count()
+	return jsonify(code=200, data={"user_num": user_num,
 								   "project_num": project_num,
 								   "task_num": task_num})

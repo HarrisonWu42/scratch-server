@@ -7,9 +7,9 @@
 | 删除班组 | POST | http://localhost:5000/group/delete
 | 关闭班组 | POST | http://localhost:5000/group/close
 | 邀请用户加入班组 | POST | http://localhost:5000/group/invite
-| 把某人提出某班| POST | http://localhost:5000/group/kick
-| 显示某个老师的班组| GET | http://localhost:5000/group/teacher/<teacher_id>/<offset>/<per_page>
-| 显示某个班组的所有学生| GET | http://localhost:5000/group/<group_id>/<offset>/<per_page>
+| 把某人踢出某班组| POST | http://localhost:5000/group/kick
+| 显示某个老师的班组| GET | http://localhost:5000/group/teacher/<teacher_id>/<offset>/<page_size>
+| 显示某个班组的所有学生| GET | http://localhost:5000/group/<group_id>/<offset>/<page_size>
 
 
 ## 创建班组
@@ -135,7 +135,7 @@
     }
     ```
 
-## 把某人提出某班组
+## 把某人踢出某班组
 - 请求参数
     
     | 参数名 | 类型| 说明 |
@@ -165,7 +165,7 @@
     | :-----| :---- | :---- |
     | teacher_id | int | 
     | offset | int |
-    | per_page | int |
+    | page_size | int |
     
 - 返回参数
     ``` 
@@ -179,9 +179,10 @@
                     "invite_code": "084795",
                     "name": "1班",
                     "teacher_id": 1,
-                    "type": "1"
+                    "type": 1
                 }
-            ]
+            ],
+            "total_pages": 4
         }
     }
     ```
@@ -194,7 +195,7 @@
     | :-----| :---- | :---- |
     | group_id | int | 
     | offset | int |
-    | per_page | int |
+    | page_size | int |
     
 - 返回参数
     ``` 
@@ -205,19 +206,15 @@
                 {
                     "email": "2554612592@qq.com",
                     "id": 2,
-                    "name": "wuhao2"
+                    "name": "teacher1"
                 },
                 {
                     "email": "2554612591@qq.com",
                     "id": 3,
-                    "name": "wuhao3"
-                },
-                {
-                    "email": "2554612590@qq.com",
-                    "id": 4,
-                    "name": "wuhao4"
+                    "name": "teacher2"
                 }
-            ]
+            ],
+            "total_pages": 2
         }
     }
     ```

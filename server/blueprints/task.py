@@ -17,49 +17,49 @@ from math import ceil
 task_bp = Blueprint('task', __name__)
 
 
-# 显示所有任务, 这个接口后面可能还要修改
-@task_bp.route('/all/<offset>/<per_page>', methods=['GET'])
-def show_tasks(offset, per_page):
-	per_page = int(per_page)
+# 显示任务集
+@task_bp.route('/tasksets/<user_id>/<offset>/<page_size>', methods=['GET'])
+def show_tasksets(user_id, offset, page_size):
+	page_size = int(page_size)
 	offset = int(offset)
 
-	tasks = Task.query.limit(per_page).offset((offset - 1) * per_page)
+	common_taskset = Group.query.filter_by(type=2).all()  # 固定任务集
+	user = User.query.get(user_id)
+	user_tasksets = user.groups  # 个人任务集
+	tasksets = common_taskset + user_tasksets  # 任务集合集
+	page_tasksets = tasksets[(offset-1) * page_size: offset * page_size]
 
-	data = tasks2json(tasks)
+	# 总页数
+	total_pages = ceil(len(tasksets) / page_size)
+
+	data = groups2json(page_tasksets)
+	data['total_pages'] = total_pages
+	data['user_id'] = user.id
+	data['user_name'] = user.name
+
+	return jsonify(code=200, data=data)
+
+
+# 显示题目集的所有题目（后续还需要修改）
+@task_bp.route('/taskset/<group_id>/<offset>/<page_size>', methods=['GET'])
+def show_tasks(group_id, offset, page_size):
+	page_size = int(page_size)
+	offset = int(offset)
+
+	group = Group.query.get(group_id)
+	tasks = group.tasks
+	page_tasks = tasks[(offset-1) * page_size: offset * page_size]
+
+	total_pages = ceil((len(tasks) + page_size - 1) / page_size)
+
+	data = tasks2json(page_tasks)
+	data['total_pages'] = total_pages
 
 	# 提交数
 
 	# 满分数
 
 	# 满分率
-
-	return jsonify(code=200, data=data)
-
-
-# 显示任务集
-@task_bp.route('/taskset/<id>/<offset>/<page_size>', methods=['GET'])
-def show_taskset(id, offset, page_size):
-	page_size = int(page_size)
-	offset = int(offset)
-
-	# 固定任务集
-	common_taskset = Group.query.filter_by(type=2).all()
-
-	# 个人任务集
-	user = User.query.get(id)
-	user_tasksets = user.groups
-
-	tasksets = common_taskset + user_tasksets
-
-	page_tasksets = tasksets[(offset-1) * page_size: offset * page_size]
-
-	# 总页数
-	total_pages = ceil((len(page_tasksets) + page_size - 1) / page_size)
-
-	data = groups2json(page_tasksets)
-	data['total_pages'] = total_pages
-	data['user_id'] = user.id
-	data['user_name'] = user.name
 
 	return jsonify(code=200, data=data)
 
@@ -100,7 +100,7 @@ def edit():
 
 	db.session.commit()
 
-	return jsonify(code=200, message="Add task success.", data={"id": id,
+	return jsonify(code=200, message="Edit task success.", data={"id": id,
 																"name": name,
 																"answer_video_url": answer_video_url})
 
@@ -117,9 +117,9 @@ def delete():
 	db.session.delete(task)
 	db.session.commit()
 
-	return jsonify(code=200, message="Delete success", data={"id": task.id,
-																"name": task.name,
-																"answer_video_url": task.answer_video_url})
+	return jsonify(code=200, message="Delete task success", data={"id": task.id,
+																  "name": task.name,
+																  "answer_video_url": task.answer_video_url})
 
 
 # 为某个班组（任务集）选择任务
@@ -141,4 +141,4 @@ def assign():
 	data['group_id'] = group.id
 	data['group_name'] = group.name
 
-	return jsonify(code=200, message="Assign success.", data=data)
+	return jsonify(code=200, message="Assign task success.", data=data)

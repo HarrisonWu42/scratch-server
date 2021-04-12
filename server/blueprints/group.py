@@ -7,6 +7,8 @@
 
 
 import random
+from math import ceil
+
 from flask import Blueprint, jsonify, request
 
 from server.extensions import db
@@ -18,30 +20,38 @@ group_bp = Blueprint('group', __name__)
 
 
 # 显示某个老师的班组
-@group_bp.route('/teacher/<teacher_id>/<offset>/<per_page>', methods=['GET'])
-def show_tasks(teacher_id, offset, per_page):
-	id = int(teacher_id)
-	per_page = int(per_page)
+@group_bp.route('/teacher/<teacher_id>/<offset>/<page_size>', methods=['GET'])
+def show_tasks(teacher_id, offset, page_size):
+	teacher_id = int(teacher_id)
+	page_size = int(page_size)
 	offset = int(offset)
 
-	groups = Group.query.filter_by(teacher_id=id).limit(per_page).offset((offset-1)*per_page)
-	data = groups2json(groups)
+	groups = Group.query.filter_by(teacher_id=teacher_id).all()
+	page_groups = groups[(offset-1) * page_size: offset * page_size]
+
+	total_pages = ceil(len(groups) / page_size)
+
+	data = groups2json(page_groups)
+	data['total_pages'] = total_pages
 
 	return jsonify(code=200, data=data)
 
 
 # 显示某个班组的所有学生
-@group_bp.route('/<group_id>/<offset>/<per_page>', methods=['GET'])
-def show_students(group_id, offset, per_page):
+@group_bp.route('/<group_id>/<offset>/<page_size>', methods=['GET'])
+def show_students(group_id, offset, page_size):
 	id = int(group_id)
-	per_page = int(per_page)
+	page_size = int(page_size)
 	offset = int(offset)
 
 	group = Group.query.get(id)
 	users = group.users  # 所有users
-	users = users[(offset-1) * per_page: offset * per_page]  # 根据分页取的
+	page_users = users[(offset-1) * page_size: offset * page_size]
 
-	data = users2json(users)
+	total_pages = ceil(len(users) / page_size)
+
+	data = users2json(page_users)
+	data['total_pages'] = total_pages
 
 	return jsonify(code=200, data=data)
 
