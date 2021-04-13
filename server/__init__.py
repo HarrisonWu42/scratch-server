@@ -8,6 +8,7 @@
 
 import os
 
+import flask_excel
 from flask import Flask
 from flask_cors import CORS
 from flask_login import current_user
@@ -46,6 +47,7 @@ def register_extensions(app):
     login_manager.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
+    flask_excel.init_excel(app)
 
 
 def register_blueprints(app):

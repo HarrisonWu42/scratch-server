@@ -225,7 +225,8 @@ def exp_excel():
         User.email.label('邮箱'),
     ).order_by(User.id.asc())
     query_sets = q.all()
-    return excel.make_response_from_query_sets(
+
+    x = excel.make_response_from_query_sets(
         query_sets,
         column_names=[
             '用户名',
@@ -234,3 +235,5 @@ def exp_excel():
         file_type='xlsx',
         file_name='list.xlsx'
     )
+
+    return x
