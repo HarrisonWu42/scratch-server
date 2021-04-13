@@ -94,7 +94,7 @@ def register():
     user = User.query.filter_by(email=form.email.data.lower()).first()
     id = user.id
 
-    token = generate_token(user=user, operation='confirm')
+    token = generate_token(user=user, operation=Operations.CONFIRM)
     url = "http://localhost:8080/#" + url_for(endpoint='auth.confirm', token=token)
 
     send_confirm_email(user=user, url=url)

@@ -7,35 +7,32 @@
 
 
 from flask import current_app, jsonify, Blueprint, url_for
-from flask_login import login_required, current_user
 
 from server.models import User
 from server.emails import send_change_email_email
 from server.extensions import db
 from server.forms.user import EditNameForm, ChangeEmailForm
-from server.utils import generate_token
+from server.settings import Operations
+from server.utils import generate_token, extract_id_from_token, validate_token
 
 user_bp = Blueprint('user', __name__)
 
 
 # 修改昵称
 @user_bp.route('/edit-name/<user_id>', methods=['POST'])
-# @login_required
 def edit_name(user_id):
     form = EditNameForm()
 
-    # current_user.name = form.name.data
     user = User.query.get(user_id)
     user.name = form.name.data
     db.session.commit()
 
-    # form.name.data = current_user.name
     return jsonify(code=200, message="Edit success", data={"id": user.id,
                                                            "name": user.name,
                                                            "email": user.email})
 
 
-# 修改邮箱(还没写好)
+# 修改邮箱
 @user_bp.route('/change-email/<user_id>', methods=['POST'])
 # @login_required
 def change_email(user_id):
@@ -47,13 +44,26 @@ def change_email(user_id):
     user.confirmed = 0
     db.session.commit()
 
-    # form.email.data = current_user.email
-
     # 发邮件
-    token = generate_token(user=user, operation='confirm')
-    url = "http://localhost:8080/#" + url_for(endpoint='user.change_email', token=token)
+    token = generate_token(user=user, operation=Operations.CHANGE_EMAIL)
+    url = "http://localhost:8080/#" + url_for(endpoint='user.confirm_change_email', token=token)
     send_change_email_email(user=user, url=url)
 
     return jsonify(code=200, message="Change email success", data={"id": user.id,
                                                                    "name": user.name,
                                                                    "email": user.email})
+
+
+@user_bp.route('/confirm_change_email/<token>', methods=['POST'])
+def confirm_change_email(token):
+    user_id = extract_id_from_token(token)
+    user = User.query.get(user_id)
+
+    if user.confirmed:
+        return jsonify(code=303, message="Redirect to main page.")
+
+    if validate_token(user=user, token=token, operation=Operations.CHANGE_EMAIL):
+        return jsonify(code=200, message="Confirm success")
+    else:
+        return jsonify(code=400, message="Error, invalid or expired token")
+
