@@ -239,9 +239,9 @@ def output_excel(group_id):
     return file_data
 
 
-# 导入excel demo
-@group_bp.route('/import_excel/', methods=['POST'])
-def import_student_from_excel():
+# 通过导入excel将学生一键加入班级
+@group_bp.route('/import_excel/<group_id>', methods=['POST'])
+def import_student_from_excel(group_id):
     file = request.files['file']
 
     print('file', type(file), file)
@@ -261,10 +261,17 @@ def import_student_from_excel():
         db.session.execute(
             User.__table__.insert(),
             [{"name": row['用户名'], "email": row['邮箱'], "password_hash": default_password} for idx, row in data.iterrows()]
-
         )
         db.session.commit()
-        return jsonify(code=200)
 
-    except:
-        return jsonify(code=403)
+        group = Group.query.get(group_id)
+        for email in data['邮箱']:
+            user = User.query.filter_by(email=email).first()
+            group.users.append(user)
+        db.session.commit()
+
+        return jsonify(code=200, message="Import success.")
+    except Exception as e:
+        return jsonify(code=403, message="Import students error.", exception=e)
+
+

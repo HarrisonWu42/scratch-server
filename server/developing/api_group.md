@@ -7,10 +7,11 @@
 | 删除班组 | POST | http://localhost:5000/group/delete
 | 关闭班组 | POST | http://localhost:5000/group/close
 | 邀请用户加入班组 | POST | http://localhost:5000/group/invite
-| 把某人踢出某班组| POST | http://localhost:5000/group/kick
-| 显示某个老师的班组| GET | http://localhost:5000/group/teacher/<teacher_id>/<offset>/<page_size>
-| 显示某个班组的所有学生| GET | http://localhost:5000/group/<group_id>/<offset>/<page_size>
-
+| 把某人踢出某班组 |POST | http://localhost:5000/group/kick
+| 显示某个老师的班组 | GET | http://localhost:5000/group/teacher/<teacher_id>/<offset>/<page_size>
+| 显示某个班组的所有学生 | GET | http://localhost:5000/group/<group_id>/<offset>/<page_size>
+| 导出某个班级的学生成绩 | GET | http://localhost:5000/group/output_excel/<group_id>
+| 一键导入学生到某个班级 | POST | http://localhost:5000/group/import_excel/<group_id>
 
 ## 创建班组
 - 请求参数
@@ -218,3 +219,27 @@
         }
     }
     ```
+
+## 导出某个班级的学生成绩
+- 请求参数
+    
+    | 参数名 | 类型| 说明 |
+    | :-----| :---- | :---- |
+    | group_id | int | 
+    
+- 返回参数
+    - 一个excel的数据
+
+## 一键导入学生到某个班级
+- 请求参数
+    
+    | 参数名 | 类型| 说明 |
+    | :-----| :---- | :---- |
+    | group_id | int | 
+    | file | file | excel文件
+    
+- 返回参数
+    | code | Message| 说明 |
+    | :-----| :---- | :---- |
+    | 200 | Import success. | 
+    | 403 | Import students error. | 同时会传回来exception
