@@ -54,6 +54,7 @@ def change_email(user_id):
                                                                    "email": user.email})
 
 
+# 修改邮箱确认
 @user_bp.route('/confirm_change_email/<token>', methods=['POST'])
 def confirm_change_email(token):
     user_id = extract_id_from_token(token)
@@ -63,7 +64,7 @@ def confirm_change_email(token):
         return jsonify(code=303, message="Redirect to main page.")
 
     if validate_token(user=user, token=token, operation=Operations.CHANGE_EMAIL):
-        return jsonify(code=200, message="Confirm success")
+        return jsonify(code=200, message="Confirm success.")
     else:
-        return jsonify(code=400, message="Error, invalid or expired token")
+        return jsonify(code=400, message="Error, invalid or expired token.")
 
