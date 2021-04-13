@@ -13,6 +13,7 @@
 | 400 | Error | 错误, 具体操作看msg
 | 401 | User already exist.| 用户已经存在了
 | 402 | Excel header error.| ExceL格式错误
+| 403 | Import students error.| 导入学生失败,具体原因看Exception
 | 单元格 | 单元格 |
 
 ## 权限管理
