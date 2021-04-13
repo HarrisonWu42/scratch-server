@@ -8,12 +8,13 @@ import random
 from io import StringIO
 from math import ceil
 import flask_excel as excel
+import xlrd
 import xlsxwriter
 from flask import Blueprint, jsonify, request, make_response
 
 from server.extensions import db
 from server.forms.group import GroupForm, EditGroupForm, CloseGroupForm, DeleteGroupForm, InviteGroupForm, KickGroupForm
-from server.models import Group, User
+from server.models import Group, User, Task, Project
 from server.utils import groups2json, users2json
 
 group_bp = Blueprint('group', __name__)
@@ -191,41 +192,25 @@ def kick():
                                                                 "group_name": group.name})
 
 
-# @group_bp.route('/test', methods=['POST'])
-# def download_excel():
-#
-# 	return 0
+# 导出班级的学生成绩   user_name, email, task_name, project_name, score, comment
+@group_bp.route('/output_excel/<group_id>', methods=['GET'])
+def output_excel(group_id):
+    group = Group.query.get(group_id)
+    users = group.users
+    user = users[0]
+    projects = user.projects
 
-
-# @group_bp.route('/down_excel')
-# def down_excel():
-# 	sio = StringIO()
-# 	workbook = xlsxwriter.Workbook(sio)  # 直接写到io中
-# 	sheet = workbook.add_worksheet(u'sheet1')
-# 	style = workbook.add_format()  # 设置风格
-# 	sheet.merge_range(0, 0, 0, 5, 'aaa')  # 合并单元格
-# 	sheet.write('A2', u'内容', style)
-# 	for i in range(2, 10):
-# 		sheet.write(i, 2, 1)
-# 	sheet.write(11, 2, '=SUM(1:10)')  # 增加公式
-# 	sheet.set_column(0, 5, 10)  # 设置列宽
-# 	sheet.set_default_row(35)  # 设置默认行高
-# 	workbook.close()  # 需要关闭
-# 	sio.seek(0)  # 找到流的起始位置
-# 	resp = make_response(sio.getvalue())
-# 	resp.headers["Content-Disposition"] = "attachment; filename={}.xlsx".format('name')
-# 	resp.headers['Content-Type'] = 'application/x-xlsx'
-# 	return resp
-
-
-@group_bp.route('/exp_excel/', methods=['GET'])
-def exp_excel():
     q = db.session.query(
         User.name.label('用户名'),
         User.email.label('邮箱'),
-    ).order_by(User.id.asc())
+        Task.name.label('题目名'),
+        Project.name.label('作品名'),
+        Project.score.label('评分'),
+        Project.comment.label('评语')
+    ).filter_by(group_id=group_id).all().order_by(User.id.asc()).order_by(Task.id.asc())
     query_sets = q.all()
 
+    file_name = group.name + '.xlsx'
     x = excel.make_response_from_query_sets(
         query_sets,
         column_names=[
@@ -233,7 +218,32 @@ def exp_excel():
             '邮箱'
         ],
         file_type='xlsx',
-        file_name='list.xlsx'
+        file_name=file_name
     )
 
     return x
+
+
+# 导入excel demo
+@group_bp.route('/import_excel/', methods=['GET', 'POST'])
+def filelist1():
+    print(request.files)
+    file = request.files['file']
+    print('file', type(file), file)
+    print(file.filename)    # 打印文件名
+
+    f = file.read()    # 文件内容
+    data = xlrd.open_workbook(file_contents=f)
+    table = data.sheets()[0]
+    names = data.sheet_names()  # 返回book中所有工作表的名字
+    status = data.sheet_loaded(names[0])  # 检查sheet1是否导入完毕
+    print(status)
+    nrows = table.nrows  # 获取该sheet中的有效行数
+    ncols = table.ncols  # 获取该sheet中的有效列数
+    print(nrows)
+    print(ncols)
+    s = table.col_values(0)  # 第1列数据
+    for i in s:
+        ii = i.strip()
+        print(len(ii))
+    return 'OK'

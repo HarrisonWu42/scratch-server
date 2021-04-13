@@ -17,3 +17,6 @@ fake = Faker()
 
 def fake_user():
 	pass
+
+def fake_project():
+	pass
