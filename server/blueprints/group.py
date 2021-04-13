@@ -8,9 +8,10 @@ import random
 from io import StringIO
 from math import ceil
 import flask_excel as excel
-import xlrd
+import pandas as pd
 import xlsxwriter
 from flask import Blueprint, jsonify, request, make_response
+from werkzeug.security import generate_password_hash
 
 from server.extensions import db
 from server.forms.group import GroupForm, EditGroupForm, CloseGroupForm, DeleteGroupForm, InviteGroupForm, KickGroupForm
@@ -192,13 +193,19 @@ def kick():
                                                                 "group_name": group.name})
 
 
-# 导出班级的学生成绩   user_name, email, task_name, project_name, score, comment
+# 导出班级的学生成绩   user_name, email, task_name, project_name, score, comment(后续可能还要加上传时间和批改时间)
 @group_bp.route('/output_excel/<group_id>', methods=['GET'])
 def output_excel(group_id):
     group = Group.query.get(group_id)
+    tasks = group.tasks
     users = group.users
-    user = users[0]
-    projects = user.projects
+
+    task_id_list = list()
+    user_id_list = list()
+    for task in tasks:
+        task_id_list.append(task.id)
+    for user in users:
+        user_id_list.append(user.id)
 
     q = db.session.query(
         User.name.label('用户名'),
@@ -207,43 +214,57 @@ def output_excel(group_id):
         Project.name.label('作品名'),
         Project.score.label('评分'),
         Project.comment.label('评语')
-    ).filter_by(group_id=group_id).all().order_by(User.id.asc()).order_by(Task.id.asc())
+    ).filter(Project.user_id == User.id, Project.task_id == Task.id)\
+        .filter(User.id.in_(user_id_list))\
+        .filter(Task.id.in_(task_id_list))\
+        .order_by(User.id.asc()).order_by(Task.id.asc())
+
     query_sets = q.all()
 
     file_name = group.name + '.xlsx'
-    x = excel.make_response_from_query_sets(
+    file_data = excel.make_response_from_query_sets(
         query_sets,
         column_names=[
             '用户名',
-            '邮箱'
+            '邮箱',
+            '题目名',
+            '作品名',
+            '评分',
+            '评语'
         ],
         file_type='xlsx',
         file_name=file_name
     )
 
-    return x
+    return file_data
 
 
 # 导入excel demo
-@group_bp.route('/import_excel/', methods=['GET', 'POST'])
-def filelist1():
-    print(request.files)
+@group_bp.route('/import_excel/', methods=['POST'])
+def import_student_from_excel():
     file = request.files['file']
+
     print('file', type(file), file)
     print(file.filename)    # 打印文件名
 
-    f = file.read()    # 文件内容
-    data = xlrd.open_workbook(file_contents=f)
-    table = data.sheets()[0]
-    names = data.sheet_names()  # 返回book中所有工作表的名字
-    status = data.sheet_loaded(names[0])  # 检查sheet1是否导入完毕
-    print(status)
-    nrows = table.nrows  # 获取该sheet中的有效行数
-    ncols = table.ncols  # 获取该sheet中的有效列数
-    print(nrows)
-    print(ncols)
-    s = table.col_values(0)  # 第1列数据
-    for i in s:
-        ii = i.strip()
-        print(len(ii))
-    return 'OK'
+    data = pd.read_excel(file)
+    column_names = data.columns.values.tolist()
+    column_format = ["用户名", "邮箱"]
+    if column_names != column_format:
+        return jsonify(code=402, message="Excel header error.")
+
+    nrows, ncols = data.shape
+
+    default_password = generate_password_hash("123456")
+
+    try:
+        db.session.execute(
+            User.__table__.insert(),
+            [{"name": row['用户名'], "email": row['邮箱'], "password_hash": default_password} for idx, row in data.iterrows()]
+
+        )
+        db.session.commit()
+        return jsonify(code=200)
+
+    except:
+        return jsonify(code=403)

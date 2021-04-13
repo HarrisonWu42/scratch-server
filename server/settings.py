@@ -18,6 +18,10 @@ class Operations:
     RESET_PASSWORD = 'reset-password'
     CHANGE_EMAIL = 'change-emails'
 
+    USER_EFS = 'user'
+    TEACHER_EFS = 'teacher'
+    GROUP_EFS = 'group'
+
 
 # 'mysql+pymysql://用户名称:密码@localhost:端口/数据库名称'
 SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost:3306/scratchai'

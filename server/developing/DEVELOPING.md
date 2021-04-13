@@ -12,6 +12,7 @@
 | 305 | Redirect to reset_password page. | 重定向到设置密码
 | 400 | Error | 错误, 具体操作看msg
 | 401 | User already exist.| 用户已经存在了
+| 402 | Excel header error.| ExceL格式错误
 | 单元格 | 单元格 |
 
 ## 权限管理

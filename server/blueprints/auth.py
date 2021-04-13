@@ -19,15 +19,7 @@ from server.decorators import confirm_required
 auth_bp = Blueprint('auth', __name__)
 
 
-@auth_bp.route('/test', methods=['POST', 'GET'])
-@confirm_required
-def test():
-    if current_user.is_authenticated():
-        print(2222)
-    print(11111111111111)
-
-
-@auth_bp.route('/login', methods=['POST', 'GET'])
+@auth_bp.route('/login', methods=['POST'])
 def login():
 
     # if current_user.is_authenticated:  # 是否登录
@@ -65,7 +57,7 @@ def login():
 
 
 @auth_bp.route('/logout', methods=['POST'])
-@login_required
+# @login_required
 def logout():
     logout_user()
     return jsonify(code=200, message='Logout success.')
@@ -95,18 +87,15 @@ def register():
     id = user.id
 
     token = generate_token(user=user, operation=Operations.CONFIRM)
-    url = "http://localhost:8080/#" + url_for(endpoint='auth.confirm', token=token)
+    url = "http://localhost:8080/#" + url_for(endpoint='auth.confirm', token=token, _external=True)
 
     send_confirm_email(user=user, url=url)
 
-    return jsonify(code=302, message="Redirect to login page.", data={"id": id})
+    return jsonify(code=302, message="Register success, redirect to login page.", data={"id": id})
 
 
-@auth_bp.route('/confirm/<token>', methods=['POST', 'GET'])
+@auth_bp.route('/confirm/<token>', methods=['GET'])
 def confirm(token):
-    # # 为什么current_user始终时游客状态？？？
-    # if current_user.confirmed:
-    #     return jsonify(code=303, message="Redirect to main page.")
 
     user_id = extract_id_from_token(token)
     user = User.query.filter_by(id=user_id).first()
@@ -115,12 +104,12 @@ def confirm(token):
         return jsonify(code=303, message="Redirect to main page.")
 
     if validate_token(user=user, token=token, operation=Operations.CONFIRM):
-        return jsonify(code=200, message="Confirm success")
+        return jsonify(code=200, message="Confirm success.")
     else:
-        return jsonify(code=400, message="Error, invalid or expired token")
+        return jsonify(code=400, message="Error, invalid or expired token.")
 
 
-@auth_bp.route('/resend-confirm-email')
+@auth_bp.route('/resend-confirm-email', methods=['GET'])
 @login_required
 def resend_confirm_email():
     if current_user.confirmed:
@@ -133,7 +122,7 @@ def resend_confirm_email():
     return jsonify(code=303, message="Redirect to main page.")
 
 
-@auth_bp.route('/forget-password', methods=['GET', 'POST'])
+@auth_bp.route('/forget-password', methods=['GET'])
 def forget_password():
     if current_user.is_authenticated:
         return jsonify(code=303, message="Redirect to main page.")
@@ -151,7 +140,7 @@ def forget_password():
     return jsonify(code=305, message="Redirect to reset_password page.")
 
 
-@auth_bp.route('/reset-password/<token>', methods=['GET', 'POST'])
+@auth_bp.route('/reset-password/<token>', methods=['GET'])
 def reset_password(token):
     if current_user.is_authenticated:
         return jsonify(code=303, message="Redirect to main page.")

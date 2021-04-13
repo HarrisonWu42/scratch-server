@@ -7,7 +7,7 @@
 | 删除题目 | POST | http://localhost:5000/task/delete|
 | 为班组/题目集分配题目| POST | http://localhost:5000/task/assign
 | 显示题目集| GET | http://localhost:5000/task/tasksets/<user_id>/<offset>/<page_size>
-| 显示题目集的题目 | GET | http://localhost:5000/task/all/<offset>/<per_page>
+| 显示题目集的题目 | GET | http://localhost:5000/task/all/<offset>/<page_size>
 
 
 ## 发布题目
