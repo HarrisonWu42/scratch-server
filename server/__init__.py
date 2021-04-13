@@ -16,6 +16,7 @@ from server.blueprints.auth import auth_bp
 from server.blueprints.admin import admin_bp
 from server.blueprints.group import group_bp
 from server.blueprints.home import home_bp
+from server.blueprints.project import project_bp
 from server.blueprints.task import task_bp
 from server.blueprints.user import user_bp
 from server.extensions import db, mail, moment, login_manager
@@ -57,6 +58,7 @@ def register_blueprints(app):
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(task_bp, url_prefix='/task')
     app.register_blueprint(group_bp, url_prefix='/group')
+    app.register_blueprint(project_bp, url_prefix='/project')
 
 
 def regitser_shell_context(app):

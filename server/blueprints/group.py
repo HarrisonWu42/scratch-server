@@ -5,7 +5,6 @@
 # @File : group.py 
 # @Software: PyCharm
 import random
-from io import StringIO
 from math import ceil
 import flask_excel as excel
 import pandas as pd
