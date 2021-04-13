@@ -117,3 +117,23 @@ def users2json(users):
     json_dic = {"students": json_array}
 
     return json_dic
+
+
+def xlsx_style(**kwargs):
+    style = {
+        'bold': kwargs.get('bold', False),  # 加粗
+        'font_name': kwargs.get('font_name', 'SimSun'),  # 字体类型，默认宋体
+        'font_size': kwargs.get('font_size', 12),  # 字体大小，默认12
+        'font_color': kwargs.get('font_color', '#000000'),  # 字体颜色，黑色
+        'align': kwargs.get('align', 'center'),  # 默认水平居中
+        'valign': kwargs.get('valign', 'vcenter'),  # 默认垂直居中
+        'text_wrap': kwargs.get('text_wrap', True),  # 默认自动换行
+        'top': kwargs.get('top', 1),  # 上边界，线条宽度
+        'bottom': kwargs.get('bottom', 1),  # 边界
+        'left': kwargs.get('left', 1),  # 边界
+        'right': kwargs.get('right', 1),  # 边界
+        'bg_color': kwargs.get('bg_color', '#FFFFFF'),  # 背景颜色，白色
+        # 其他类型设置格式可以接着写
+    }
+
+    return style
