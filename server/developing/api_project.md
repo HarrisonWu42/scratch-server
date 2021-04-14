@@ -13,10 +13,8 @@
     | 参数名 | 类型| 说明 |
     | :-----| :---- | :---- |
     | user_id | text | 
-    | teacher_id | text | 
     | task_id | text |
-    | name | text |  
-    | file | file |  
+    | file | file |  文件名不超过30个字符
     
 - 返回参数
     - code=400, message=File type is not allowed.

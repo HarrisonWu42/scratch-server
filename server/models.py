@@ -52,9 +52,9 @@ class Role(db.Model):
 	@staticmethod
 	def init_role():
 		roles_permissions_map = {
-			'User': [],
-			'Teacher': [],
-			'Administrator': []
+			'User': ['INVITED', 'UPLOAD', 'PROJECT'],
+			'Teacher': ['PROJECT', 'EVALUATE', 'TASK', 'GROUP', ],
+			'Administrator': ['INVITED', 'PROJECT', 'TASK', 'GROUP', 'ADMINISTER']
 		}
 
 		for role_name in roles_permissions_map:

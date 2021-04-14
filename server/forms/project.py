@@ -17,3 +17,9 @@ class ProjectForm(FlaskForm):
 	task_id = IntegerField('task_id')
 	teacher_id = IntegerField('teacher_id')
 	submit = SubmitField()
+
+
+class CorrectForm(FlaskForm):
+	id = IntegerField('id')
+	score = IntegerField('id')
+	submit = SubmitField()
