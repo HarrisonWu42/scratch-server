@@ -25,12 +25,11 @@ def is_allowed_file(filename):
 def upload_file():
 
     user_id = int(request.form['user_id'])
-    teacher_id = int(request.form['teacher_id'])
     task_id = int(request.form['task_id'])
-    name = request.form['name']
     file = request.files['file']
 
     filename = file.filename
+    name = filename.split('.')[0]
     if is_allowed_file(filename) is False:
         return jsonify(code=400, message="File type is not allowed.")
 
@@ -40,7 +39,7 @@ def upload_file():
     else:
         max_project_id = project.id
 
-    project = Project(name=name, user_id=user_id, teacher_id=teacher_id, task_id=task_id, commit_timestamp=datetime.utcnow())
+    project = Project(name=name, user_id=user_id, task_id=task_id, commit_timestamp=datetime.utcnow())
     db.session.add(project)
     db.session.commit()
 
