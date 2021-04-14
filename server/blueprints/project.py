@@ -61,7 +61,7 @@ def download_file(project_id):
     if not os.path.exists(path):
         return jsonify(code=400, message="File is not exist.")
 
-    return send_file(path, attachment_filename=project.name + '.sb3')
+    return send_file(path, as_attachment=True)
 
 
 # 评测！！！
