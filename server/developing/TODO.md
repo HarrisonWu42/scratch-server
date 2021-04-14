@@ -21,7 +21,6 @@
 - fake功能
 - project
     - 评测
-    - 下载文件 need to be check
 - admin
     - 修改用户权限
 - auth

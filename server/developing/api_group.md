@@ -11,7 +11,7 @@
 | 显示某个老师的班组 | GET | http://localhost:5000/group/teacher/<teacher_id>/<offset>/<page_size>
 | 显示某个班组的所有学生 | GET | http://localhost:5000/group/<group_id>/<offset>/<page_size>
 | 一键导入学生到某个班级 | POST | http://localhost:5000/group/import_excel/<group_id>
-| 导出某个班级的学生成绩(xx) | GET | http://localhost:5000/group/output_excel/<group_id>
+| 导出某个班级的学生成绩 | GET | http://localhost:5000/group/output_excel/<group_id>
 | 为班级分配题目集| POST | http://localhost:5000/taskset/assign
 
 ## 创建班组

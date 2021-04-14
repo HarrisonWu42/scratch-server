@@ -255,13 +255,16 @@ def import_student_from_excel(group_id):
 @group_bp.route('/output_excel/<group_id>', methods=['GET'])
 def output_excel(group_id):
     group = Group.query.get(group_id)
-    tasks = group.tasks
-    users = group.users
 
     task_id_list = list()
+    tasksets = group.tasksets
+    for taskset in tasksets:
+        tasks = taskset.tasks
+        for task in tasks:
+            task_id_list.append(task.id)
+
     user_id_list = list()
-    for task in tasks:
-        task_id_list.append(task.id)
+    users = group.users
     for user in users:
         user_id_list.append(user.id)
 
@@ -270,6 +273,7 @@ def output_excel(group_id):
         User.email.label('邮箱'),
         Task.name.label('题目名'),
         Project.name.label('作品名'),
+        Project.commit_timestamp.label('提交时间'),
         Project.score.label('评分'),
         Project.comment.label('评语')
     ).filter(Project.user_id == User.id, Project.task_id == Task.id)\
@@ -287,6 +291,7 @@ def output_excel(group_id):
             '邮箱',
             '题目名',
             '作品名',
+            '提交时间',
             '评分',
             '评语'
         ],
@@ -295,4 +300,3 @@ def output_excel(group_id):
     )
 
     return file_data
-
