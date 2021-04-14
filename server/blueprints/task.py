@@ -86,6 +86,16 @@ def delete():
 																  "answer_video_url": task.answer_video_url})
 
 
+@task_bp.route('/<task_id>', methods=['GET'])
+def show_task(task_id):
+	task = Task.query.get(task_id)
+
+	return jsonify(code=200, data={"id": task.id,
+								   "name": task.name,
+								   "description": task.description,
+								   "answer_video_url": task.answer_video_url})
+
+
 # 查看某人某任务的所有提交列表
 @task_bp.route('/project/<user_id>/<task_id>', methods=['GET'])
 def show_projects(user_id, task_id):
