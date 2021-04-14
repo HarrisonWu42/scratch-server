@@ -4,6 +4,7 @@
 # @Email: hangzhouwh@gmail.com
 # @File : group.py 
 # @Software: PyCharm
+import json
 import random
 from math import ceil
 import flask_excel as excel
@@ -14,8 +15,8 @@ from werkzeug.security import generate_password_hash
 
 from server.extensions import db
 from server.forms.group import GroupForm, EditGroupForm, CloseGroupForm, DeleteGroupForm, InviteGroupForm, KickGroupForm
-from server.models import Group, User, Task, Project
-from server.utils import groups2json, users2json
+from server.models import Group, User, Task, Project, Taskset
+from server.utils import groups2json, users2json, taskset2json
 
 group_bp = Blueprint('group', __name__)
 
@@ -77,12 +78,12 @@ def add():
 
     group = Group.query.filter_by(name=name).first()
 
-    return jsonify(code=200, message="Add success.", data={"id": group.id,
-                                                                "name": group.name,
-                                                                "description": group.description,
-                                                                "type": group.type,
-                                                                "teacher_id": group.teacher_id,
-                                                                "invite_code": group.invite_code})
+    return jsonify(code=200, message="Add group success.", data={"id": group.id,
+                                                                 "name": group.name,
+                                                                 "description": group.description,
+                                                                 "type": group.type,
+                                                                 "teacher_id": group.teacher_id,
+                                                                 "invite_code": group.invite_code})
 
 
 # 修改班组
@@ -101,12 +102,12 @@ def edit():
 
     db.session.commit()
 
-    return jsonify(code=200, message="Edit success.", data={"id": group.id,
-                                                                "name": group.name,
-                                                                "description": group.description,
-                                                                "type": group.type,
-                                                                "teacher_id": group.teacher_id,
-                                                                "invite_code": group.invite_code})
+    return jsonify(code=200, message="Edit group success.", data={"id": group.id,
+                                                                  "name": group.name,
+                                                                  "description": group.description,
+                                                                  "type": group.type,
+                                                                  "teacher_id": group.teacher_id,
+                                                                  "invite_code": group.invite_code})
 
 
 # 删除班组
@@ -121,12 +122,12 @@ def delete():
     db.session.delete(group)
     db.session.commit()
 
-    return jsonify(code=200, message="Delete success.", data={"id": group.id,
-                                                                "name": group.name,
-                                                                "description": group.description,
-                                                                "type": group.type,
-                                                                "teacher_id": group.teacher_id,
-                                                                "invite_code": group.invite_code})
+    return jsonify(code=200, message="Delete group success.", data={"id": group.id,
+                                                                    "name": group.name,
+                                                                    "description": group.description,
+                                                                    "type": group.type,
+                                                                    "teacher_id": group.teacher_id,
+                                                                    "invite_code": group.invite_code})
 
 
 # 关闭班组
@@ -142,12 +143,12 @@ def close():
 
     db.session.commit()
 
-    return jsonify(code=200, message="Close success.", data={"id": group.id,
-                                                                "name": group.name,
-                                                                "description": group.description,
-                                                                "type": group.type,
-                                                                "teacher_id": group.teacher_id,
-                                                                "invite_code": group.invite_code})
+    return jsonify(code=200, message="Close group success.", data={"id": group.id,
+                                                                   "name": group.name,
+                                                                   "description": group.description,
+                                                                   "type": group.type,
+                                                                   "teacher_id": group.teacher_id,
+                                                                   "invite_code": group.invite_code})
 
 
 # 通过邀请码邀请用户加入班组
@@ -190,6 +191,64 @@ def kick():
                                                                 "email": user.email,
                                                                 "group_id": group.id,
                                                                 "group_name": group.name})
+
+
+# 为班级分配题目集
+@group_bp.route('/assign', methods=['POST'])
+def assign():
+    data = json.loads(bytes.decode(request.data))
+    group_id = data["group_id"]
+    taskset_id_list = data['tasksets']
+
+    group = Group.query.get(group_id)
+    for taskset_id in taskset_id_list:
+        taskset = Taskset.query.get(taskset_id)
+        group.tasksets.append(taskset)
+
+    db.session.commit()
+
+    tasksets = group.tasksets
+    data = taskset2json(tasksets)
+    data['group_id'] = group.id
+    data['group_name'] = group.name
+
+    return jsonify(code=200, message="Assign taskset success.", data=data)
+
+
+# 通过导入excel将学生一键加入班级
+@group_bp.route('/import_excel/<group_id>', methods=['POST'])
+def import_student_from_excel(group_id):
+    file = request.files['file']
+
+    print('file', type(file), file)
+    print(file.filename)    # 打印文件名
+
+    data = pd.read_excel(file)
+    column_names = data.columns.values.tolist()
+    column_format = ["用户名", "邮箱"]
+    if column_names != column_format:
+        return jsonify(code=402, message="Excel header error.")
+
+    nrows, ncols = data.shape
+
+    default_password = generate_password_hash("123456")
+
+    try:
+        db.session.execute(
+            User.__table__.insert(),
+            [{"name": row['用户名'], "email": row['邮箱'], "password_hash": default_password} for idx, row in data.iterrows()]
+        )
+        db.session.commit()
+
+        group = Group.query.get(group_id)
+        for email in data['邮箱']:
+            user = User.query.filter_by(email=email).first()
+            group.users.append(user)
+        db.session.commit()
+
+        return jsonify(code=200, message="Import success.")
+    except Exception as e:
+        return jsonify(code=403, message="Import students error.", exception=e)
 
 
 # 导出班级的学生成绩   user_name, email, task_name, project_name, score, comment(后续可能还要加上传时间和批改时间)
@@ -236,41 +295,4 @@ def output_excel(group_id):
     )
 
     return file_data
-
-
-# 通过导入excel将学生一键加入班级
-@group_bp.route('/import_excel/<group_id>', methods=['POST'])
-def import_student_from_excel(group_id):
-    file = request.files['file']
-
-    print('file', type(file), file)
-    print(file.filename)    # 打印文件名
-
-    data = pd.read_excel(file)
-    column_names = data.columns.values.tolist()
-    column_format = ["用户名", "邮箱"]
-    if column_names != column_format:
-        return jsonify(code=402, message="Excel header error.")
-
-    nrows, ncols = data.shape
-
-    default_password = generate_password_hash("123456")
-
-    try:
-        db.session.execute(
-            User.__table__.insert(),
-            [{"name": row['用户名'], "email": row['邮箱'], "password_hash": default_password} for idx, row in data.iterrows()]
-        )
-        db.session.commit()
-
-        group = Group.query.get(group_id)
-        for email in data['邮箱']:
-            user = User.query.filter_by(email=email).first()
-            group.users.append(user)
-        db.session.commit()
-
-        return jsonify(code=200, message="Import success.")
-    except Exception as e:
-        return jsonify(code=403, message="Import students error.", exception=e)
-
 

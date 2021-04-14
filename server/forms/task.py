@@ -7,12 +7,13 @@
 
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, IntegerField, FieldList, FormField
+from wtforms import StringField, SubmitField, IntegerField, TextAreaField
 from wtforms.validators import DataRequired, Length
 
 
 class AddTaskForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
+    description = TextAreaField('Description', validators=[DataRequired(), Length(1, 254)])
     answer_video_url = StringField('Answer Video Url', validators=[DataRequired(), Length(1, 120)])
     submit = SubmitField()
 
@@ -20,6 +21,7 @@ class AddTaskForm(FlaskForm):
 class EditTaskForm(FlaskForm):
     id = IntegerField('id')
     name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
+    description = TextAreaField('Description', validators=[DataRequired(), Length(1, 254)])
     answer_video_url = StringField('Answer Video Url', validators=[DataRequired(), Length(1, 120)])
     submit = SubmitField()
 

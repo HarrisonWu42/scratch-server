@@ -83,11 +83,28 @@ def tasks2json(tasks):
 
     json_array = []
     for task in tasks:
-        task_obj = {"id": task.id, "name": task.name, "answer_video_url": task.answer_video_url}
+        task_obj = {"id": task.id,
+                    "name": task.name,
+                    "description": task.description,
+                    "answer_video_url": task.answer_video_url}
         json_array.append(task_obj)
     json_dic = {"tasks": json_array}
 
     return json_dic
+
+
+def taskset2json(tasksets):
+
+    json_array = []
+    for taskset in tasksets:
+        taskset_obj = {"id": taskset.id,
+                    "name": taskset.name,
+                    "type": taskset.type}
+        json_array.append(taskset_obj)
+    json_dic = {"tasksets": json_array}
+
+    return json_dic
+
 
 
 def groups2json(groups):

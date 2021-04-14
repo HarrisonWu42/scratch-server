@@ -2,13 +2,34 @@
 
 | api | method| url |
 | :-----| :---- | :---- |
+| 注册 | POST | http://localhost:5000/auth/register
 | 登录 | POST | http://localhost:5000/auth/login
 | 登出 | POST | http://localhost:5000/auth/logout
-| 注册 | POST | http://localhost:5000/auth/register
 | 确认 | GET | http://localhost:5000/auth/confirm/<token>
 | 重新发送确认邮件| GET | http://localhost:5000/auth/resend-confirm-email
 | 忘记密码 | GET | http://localhost:5000/auth/forget-password
 | 重置密码 | GET | http://localhost:5000/auth/reset-password/<token>
+
+## 注册
+- 请求参数
+    
+    | 参数名 | 类型| 说明 |
+    | :-----| :---- | :---- |
+    | name | string | 
+    | email | string | 
+    | password | string | 
+    | password2 | string |  
+    
+- 返回参数
+    ``` 
+    {
+        "code": 302,
+        "data": {
+            "id": 6
+        },
+        "message": "Register success, redirect to login page."
+    }
+    ```
 
 ## 登录
 - 请求参数
@@ -41,27 +62,6 @@
     {
         "code": 200,
         "message": "Logout success."
-    }
-    ```
-
-## 注册
-- 请求参数
-    
-    | 参数名 | 类型| 说明 |
-    | :-----| :---- | :---- |
-    | name | string | 
-    | email | string | 
-    | password | string | 
-    | password2 | string |  
-    
-- 返回参数
-    ``` 
-    {
-        "code": 302,
-        "data": {
-            "id": 6
-        },
-        "message": "Register success, redirect to login page."
     }
     ```
 

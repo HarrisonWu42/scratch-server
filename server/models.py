@@ -25,8 +25,13 @@ users_groups = db.Table('users_groups',
 						db.Column('group_id', db.Integer, db.ForeignKey('group.id'))
 						)
 
-groups_tasks = db.Table('groups_tasks',
+groups_tasksets = db.Table('groups_tasksets',
 						db.Column('group_id', db.Integer, db.ForeignKey('group.id')),
+						db.Column('taskset_id', db.Integer, db.ForeignKey('taskset.id'))
+						)
+
+tasksets_tasks = db.Table('tasksets_tasks',
+						db.Column('taskset_id', db.Integer, db.ForeignKey('taskset.id')),
 						db.Column('task_id', db.Integer, db.ForeignKey('task.id'))
 						)
 
@@ -115,13 +120,13 @@ class Group(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(20), unique=True, index=True)
 	description = db.Column(db.String(80))
-	type = db.Column(db.Integer, index=True)  # type=0: 关闭组 type=1: 开放组 type=2: 固定题目集
+	type = db.Column(db.Integer, index=True)  # type=0: 关闭组 type=1: 开放组
 	teacher_id = db.Column(db.Integer, index=True)
 
 	invite_code = db.Column(db.String(6), unique=True)
 
 	users = db.relationship('User', secondary=users_groups, back_populates='groups')
-	tasks = db.relationship('Task', secondary=groups_tasks, back_populates='groups')
+	tasksets = db.relationship('Taskset', secondary=groups_tasksets, back_populates='groups')
 
 
 class Project(db.Model):
@@ -147,7 +152,17 @@ class Project(db.Model):
 class Task(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(30), unique=True)
+	description = db.Column(db.String(80))
 	answer_video_url = db.Column(db.String(120))
 
 	projects = db.relationship('Project', back_populates='task')
-	groups = db.relationship('Group', secondary=groups_tasks, back_populates='tasks')
+	tasksets = db.relationship('Taskset', secondary=tasksets_tasks, back_populates='tasks')
+
+
+class Taskset(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String(30), unique=True)
+	type = db.Column(db.Integer)  # type=0: 非固定任务集 type=1:固定任务集
+
+	tasks = db.relationship('Task', secondary=tasksets_tasks, back_populates='tasksets')
+	groups = db.relationship('Group', secondary=groups_tasksets, back_populates='tasksets')
