@@ -20,6 +20,7 @@ def is_allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_FILETYPES
 
 
+# 上传项目
 @project_bp.route('/upload', methods=['POST'])
 def upload_file():
 
@@ -56,6 +57,7 @@ def upload_file():
                                                               "name": project.name})
 
 
+# 下载项目
 @project_bp.route('/download/<project_id>', methods=['GET'])
 def download_file(project_id):
     project = Project.query.get(project_id)

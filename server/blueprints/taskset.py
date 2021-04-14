@@ -17,7 +17,7 @@ from server.utils import tasks2json, taskset2json
 taskset_bp = Blueprint('taskset', __name__)
 
 
-# 添加题目集
+# 创建题目集
 @taskset_bp.route('/add', methods=['POST'])
 def add():
 	form = AddTasksetForm()
