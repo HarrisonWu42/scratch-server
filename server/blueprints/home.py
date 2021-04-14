@@ -9,9 +9,16 @@
 from flask import Blueprint, jsonify
 from sqlalchemy import func
 from server.extensions import db
-from server.models import User, Task, Project
+from server.models import User, Task, Project, Taskset
 
 home_bp = Blueprint('home', __name__)
+
+
+@home_bp.route('/test', methods=['GET'])
+def test():
+	users = User.query.filter(User.id != 1).all()
+	a = users[1]
+	return 0
 
 
 @home_bp.route('/', methods=['GET'])
@@ -25,3 +32,5 @@ def show_datas():
 	return jsonify(code=200, data={"user_num": user_num,
 								   "project_num": project_num,
 								   "task_num": task_num})
+
+

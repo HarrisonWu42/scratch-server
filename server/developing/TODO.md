@@ -18,7 +18,6 @@
         - 选择答案版本
     
 ## Wh
-- fake功能
 - project
     - 评测
 - admin
