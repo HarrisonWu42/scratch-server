@@ -18,17 +18,13 @@
         - 选择答案版本
     
 ## Wh
+- fake功能
+- project
+    - 评测
+    - 下载文件 need to be check
 - admin
     - 修改用户权限
 - auth
     - 权限管理
     - 补api文档
-- project
-    - 评测
-    - 加载结果（选择版本）
-- taskset
-    - 创建任务集
-    - 删除任务集
-    
-- fake功能
 

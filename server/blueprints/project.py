@@ -34,7 +34,10 @@ def upload_file():
         return jsonify(code=400, message="File type is not allowed.")
 
     project = Project.query.order_by(-Project.id).limit(1).first()
-    max_project_id = project.id
+    if project is None:
+        max_project_id = 0
+    else:
+        max_project_id = project.id
 
     project = Project(name=name, user_id=user_id, teacher_id=teacher_id, task_id=task_id, commit_timestamp=datetime.utcnow())
     db.session.add(project)
@@ -62,6 +65,20 @@ def download_file(project_id):
         return jsonify(code=400, message="File is not exist.")
 
     return send_file(path, as_attachment=True)
+
+
+# 查询某个项目的评测结果
+@project_bp.route('/<project_id>', methods=['GET'])
+def show_project(project_id):
+    project = Project.query.get(project_id)
+
+    return jsonify(code=200, data={"id": project.id,
+                                   "name": project.name,
+                                   "score": project.score,
+                                   "comment": project.comment,
+                                   "logicality": project.logicality,
+                                   "workload": project.workload,
+                                   "complexity": project.complexity})
 
 
 # 评测！！！

@@ -4,7 +4,8 @@
 | :-----| :---- | :---- |
 | 创建题目 | POST | http://localhost:5000/task/add
 | 修改题目 | POST | http://localhost:5000/task/edit
-| 删除题目 | POST | http://localhost:5000/task/delete|
+| 删除题目 | POST | http://localhost:5000/task/delete
+| 查看某人某任务的所有提交列表| GET| http://localhost:5000/task/project/<user_id>/<task_id>
 
 ## 创建题目
 - 请求参数
@@ -76,4 +77,36 @@
     }
     ```
   
-  
+## 查看某人某任务的所有提交列表
+- 请求参数
+    
+    | 参数名 | 类型| 说明 |
+    | :-----| :---- | :---- |
+    | user_id | int | 
+    | task_id | int |
+
+- 返回参数
+    ```
+    {
+        "code": 200,
+        "data": {
+            "projects": [
+                {
+                    "commit_timestamp": "Wed, 14 Apr 2021 07:17:18 GMT",
+                    "id": 6,
+                    "name": "作品"
+                },
+                {
+                    "commit_timestamp": "Wed, 14 Apr 2021 07:17:17 GMT",
+                    "id": 4,
+                    "name": "作品"
+                },
+                {
+                    "commit_timestamp": "Wed, 14 Apr 2021 07:17:17 GMT",
+                    "id": 5,
+                    "name": "作品"
+                },
+            ]
+        }
+    }
+    ```

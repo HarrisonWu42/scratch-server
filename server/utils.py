@@ -106,7 +106,6 @@ def taskset2json(tasksets):
     return json_dic
 
 
-
 def groups2json(groups):
 
     json_array = []
@@ -132,6 +131,18 @@ def users2json(users):
                      "email": user.email}
         json_array.append(user_obj)
     json_dic = {"students": json_array}
+
+    return json_dic
+
+
+def bprojects2json(projects):
+    json_array = []
+    for project in projects:
+        project_obj = {"id": project.id,
+                       "name": project.name,
+                       "commit_timestamp": project.commit_timestamp}
+        json_array.append(project_obj)
+    json_dic = {"projects": json_array}
 
     return json_dic
 

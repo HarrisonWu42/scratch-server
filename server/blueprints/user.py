@@ -34,7 +34,6 @@ def edit_name(user_id):
 
 # 修改邮箱
 @user_bp.route('/change-email/<user_id>', methods=['POST'])
-# @login_required
 def change_email(user_id):
     form = ChangeEmailForm()
 

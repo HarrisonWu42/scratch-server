@@ -10,8 +10,10 @@ from flask import Blueprint, jsonify, request
 
 from server.extensions import db
 from server.forms.task import AddTaskForm, EditTaskForm, DeleteTaskForm
-from server.models import Task
+from server.models import Task, User, Project
 from math import ceil
+
+from server.utils import bprojects2json
 
 task_bp = Blueprint('task', __name__)
 
@@ -82,3 +84,14 @@ def delete():
 																  "name": task.name,
 																  "description": task.description,
 																  "answer_video_url": task.answer_video_url})
+
+
+# 查看某人某任务的所有提交列表
+@task_bp.route('/project/<user_id>/<task_id>', methods=['GET'])
+def show_projects(user_id, task_id):
+	user = User.query.get(user_id)
+	projects = Project.query.filter(Project.user_id == user_id, Project.task_id == task_id)\
+		.order_by(Project.commit_timestamp.desc()).all()
+	data = bprojects2json(projects)
+
+	return jsonify(code=200, data=data)
