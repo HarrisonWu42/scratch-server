@@ -126,10 +126,10 @@ class Group(db.Model):
 
 class Project(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(30), unique=True)
+	name = db.Column(db.String(30))
 	score = db.Column(db.Integer)
 	comment = db.Column(db.Text)
-	correct_timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+	correct_timestamp = db.Column(db.DateTime)
 	commit_timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 	logicality = db.Column(db.Float)
 	workload = db.Column(db.Float)

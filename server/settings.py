@@ -40,3 +40,6 @@ ADMIN_EMAIL = MAIL_USERNAME
 MAIL_PASSWORD = 'amzzvffdquulbgbi'  # qq邮箱授权码
 MAIL_DEFAULT_SENDER = ('ScratchAi Admin', MAIL_USERNAME)
 SCRATCHAI_MAIL_SUBJECT_PREFIX = '[scratchai]'
+
+FILE_FOLDER = 'path/to/file_folder'
+ALLOWED_FILETYPES = set(['sb3'])
