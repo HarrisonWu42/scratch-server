@@ -1,23 +1,29 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 # @Time : 2021/4/6 21:09
-# @Author : hangzhouwh 
+# @Author : hangzhouwh
 # @Email: hangzhouwh@gmail.com
-# @File : fakes.py 
+# @File : fakes.py
 # @Software: PyCharm
 
 
 import random
 from datetime import datetime
 
-from faker import Faker
+from faker import Faker, Factory
 from sqlalchemy.exc import IntegrityError
+
+import server
 from server.extensions import db
-from server.models import User, Group, Project, Task, Taskset
-
-fake = Faker()
+from server.models import User, Group, Project, Task, Taskset, Role
 
 
-def fake_db():
+fake = Faker(locale='zh_CN')
+
+
+def db_init():
+	server.db.create_all()
+	Role.init_role()
+
 	fake_user(10)
 	fake_group(3)
 	fake_taskset(3)
@@ -31,9 +37,13 @@ def fake_db():
 
 
 def fake_user(count=10):
-	user = User(name="teacher", email=fake.email(), confirmed=True)
-	user.set_password('123456')
-	db.session.add(user)
+	user_admin = User(name='admin', email='hangzhouwh@qq.com', confirmed=True)
+	user_admin.set_password('123456')
+	db.session.add(user_admin)
+
+	user_teacher = User(name="teacher", email='hangzhouwh@zucc.edu.cn', confirmed=True)
+	user_teacher.set_password('123456')
+	db.session.add(user_teacher)
 
 	for i in range(count):
 		user = User(name=fake.name(),
@@ -53,11 +63,11 @@ def fake_group(count=5):
 		while Group.query.filter_by(invite_code=invite_code).first() is not None:
 			invite_code = "".join(item for item in random.sample('0123456789', 6))
 
-		group = Group(name=fake.name(),
+		group = Group(name='班级'+fake.postcode(),
 					  description=fake.text(max_nb_chars=20),
 					  type=1,
 					  invite_code=invite_code,
-					  teacher_id=1)
+					  teacher_id=2)
 
 		db.session.add(group)
 		try:
@@ -68,7 +78,7 @@ def fake_group(count=5):
 
 def fake_taskset(count=3):
 	for i in range(count):
-		taskset = Taskset(name=fake.name(), type=0)
+		taskset = Taskset(name='任务集'+fake.postcode(), type=0)
 
 		db.session.add(taskset)
 		try:
@@ -77,7 +87,7 @@ def fake_taskset(count=3):
 			db.session.rollback()
 
 	for i in range(count):
-		taskset = Taskset(name=fake.name(), type=1)
+		taskset = Taskset(name='任务集'+fake.postcode(), type=1)
 
 		db.session.add(taskset)
 		try:
@@ -88,7 +98,7 @@ def fake_taskset(count=3):
 
 def fake_task(count=20):
 	for i in range(count):
-		task = Task(name=fake.name(),
+		task = Task(name='任务'+fake.postcode(),
 					description=fake.text(max_nb_chars=20),
 					answer_video_url="www.baidu.com")
 
@@ -148,11 +158,11 @@ def fake_project(count=100):
 			group = groups[random.randint(0, len(groups)-1)]
 			tasksets = group.tasksets
 			if len(tasksets) > 0:
-				taskset  = tasksets[random.randint(0, len(tasksets)-1)]
+				taskset = tasksets[random.randint(0, len(tasksets)-1)]
 				tasks = taskset.tasks
-				if len(tasks)>0:
+				if len(tasks) > 0:
 					task = tasks[random.randint(0, len(tasks)-1)]
-					project = Project(name=fake.name(),
+					project = Project(name='作品'+fake.postcode(),
 									  score=random.randint(1, 5),
 									  comment=fake.text(max_nb_chars=20),
 									  commit_timestamp=datetime.utcnow(),

@@ -52,9 +52,9 @@ class Role(db.Model):
 	@staticmethod
 	def init_role():
 		roles_permissions_map = {
-			'User': ['INVITED', 'UPLOAD', 'PROJECT'],
-			'Teacher': ['PROJECT', 'EVALUATE', 'TASK', 'GROUP', ],
-			'Administrator': ['INVITED', 'PROJECT', 'TASK', 'GROUP', 'ADMINISTER']
+			'Student': ['INVITED', 'PROJECT'],
+			'Teacher': ['EVALUATE', 'TASK', 'GROUP', ],
+			'Administrator': ['INVITED', 'PROJECT', 'EVALUATE', 'TASK', 'GROUP', 'ADMINISTER']
 		}
 
 		for role_name in roles_permissions_map:
@@ -100,8 +100,10 @@ class User(db.Model, UserMixin):
 		if self.role is None:
 			if self.email == current_app.config['ADMIN_EMAIL']:
 				self.role = Role.query.filter_by(name='Administrator').first()
+			elif self.email.split('@')[-1] == current_app.config['TEACHER_EMAIL']:
+				self.role = Role.query.filter_by(name='Teacher').first()
 			else:
-				self.role = Role.query.filter_by(name='User').first()
+				self.role = Role.query.filter_by(name='Student').first()
 			db.session.commit()
 
 	def validate_password(self, password):

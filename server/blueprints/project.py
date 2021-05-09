@@ -6,7 +6,7 @@
 # @Software: PyCharm
 
 
-from flask import Blueprint, jsonify, request, make_response, send_file
+from flask import Blueprint, jsonify, request, send_file
 from datetime import datetime
 from server.extensions import db
 from server.models import User, Task, Project
@@ -89,6 +89,7 @@ def evaluate(fileid):
     return jsonify(code=200)
 
 
+# 老师批改项目（修改自动评测的结果）
 @project_bp.route('/evaluate-correct', methods=['POST'])
 def evaluate_correct(fileid):
 
