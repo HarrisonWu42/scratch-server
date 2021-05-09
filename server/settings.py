@@ -24,7 +24,7 @@ class Operations:
 
 
 # 'mysql+pymysql://用户名称:密码@localhost:端口/数据库名称'
-SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost:3306/test'
+SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:root@localhost:3306/scratchai'
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 

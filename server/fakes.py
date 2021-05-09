@@ -9,7 +9,7 @@
 import random
 from datetime import datetime
 
-from faker import Faker, Factory
+from faker import Faker
 from sqlalchemy.exc import IntegrityError
 
 import server

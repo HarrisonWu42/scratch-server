@@ -97,32 +97,36 @@ def assign():
 	return jsonify(code=200, message="Assign task success.", data=data)
 
 
-# 查询题目集的的所有题目（后续还需要修改）
-@taskset_bp.route('/task/<taskset_id>/<offset>/<page_size>', methods=['GET'])
-def show_tasks(taskset_id, offset, page_size):
-	task_id = int(taskset_id)
-	page_size = int(page_size)
-	offset = int(offset)
+# 查询题目集的的所有题目
+@taskset_bp.route('/task/<taskset_id>', methods=['GET'])
+def show_tasks(taskset_id):
+	taskset_id = int(taskset_id)
 
 	taskset = Taskset.query.get(taskset_id)
 	tasks = taskset.tasks
-	page_tasks = tasks[(offset-1) * page_size: offset * page_size]
 
-	total_pages = ceil((len(tasks) + page_size - 1) / page_size)
+	data = tasks2json(tasks)
 
-	data = tasks2json(page_tasks)
-	data['total_pages'] = total_pages
+	return jsonify(code=200, data=data)
 
-	# 提交数
 
-	# 满分数
+# 查询某人某题目集的得分（得分/总分）
+@taskset_bp.route('/<user_id>/<taskset_id>', methods=['GET'])
+def show_taskset_score(user_id, taskset_id):
+	user_id = int(user_id)
+	user = User.query.get(user_id)
+	taskset_id = int(taskset_id)
 
-	# 满分率
+	taskset = Taskset.query.get(taskset_id)
+	tasks = taskset.tasks
+
+	data = tasks2json(tasks)
 
 	return jsonify(code=200, data=data)
 
 
 # 显示某人的题目集
+# 访客 user_id = 0, 用户 user_id = 真实user_id
 @taskset_bp.route('/<user_id>/<offset>/<page_size>', methods=['GET'])
 def show_tasksets(user_id, offset, page_size):
 	user_id = int(user_id)
@@ -131,13 +135,15 @@ def show_tasksets(user_id, offset, page_size):
 
 	# 固定题目集
 	common_tasksets = Taskset.query.filter_by(type=1).all()
+
 	# 个人题目集
 	user_tasksets = list()
-	user = User.query.get(user_id)
-	groups = user.groups
-	for group in groups:
-		taskset = group.tasksets
-		user_tasksets = user_tasksets + taskset
+	if user_id != 0:
+		user = User.query.get(user_id)
+		groups = user.groups
+		for group in groups:
+			taskset = group.tasksets
+			user_tasksets = user_tasksets + taskset
 
 	tasksets = common_tasksets + user_tasksets  # 任务集合集
 	page_tasksets = tasksets[(offset-1) * page_size: offset * page_size]
@@ -147,7 +153,33 @@ def show_tasksets(user_id, offset, page_size):
 
 	data = taskset2json(page_tasksets)
 	data['total_pages'] = total_pages
-	data['user_id'] = user.id
-	data['user_name'] = user.name
+	if user_id == 0:
+		data['user_id'] = 0
+		data['user_name'] = "访客"
+	else:
+		data['user_id'] = user.id
+		data['user_name'] = user.name
 
 	return jsonify(code=200, data=data)
+
+
+
+# # 查询题目集的的所有题目（分页版本）
+# @taskset_bp.route('/task/<taskset_id>/<offset>/<page_size>', methods=['GET'])
+# def show_tasks(taskset_id, offset, page_size):
+# 	task_id = int(taskset_id)
+# 	page_size = int(page_size)
+# 	offset = int(offset)
+#
+# 	taskset = Taskset.query.get(taskset_id)
+# 	tasks = taskset.tasks
+# 	page_tasks = tasks[(offset-1) * page_size: offset * page_size]
+#
+# 	total_pages = ceil((len(tasks) + page_size - 1) / page_size)
+#
+# 	data = tasks2json(page_tasks)
+# 	data['total_pages'] = total_pages
+#
+# 	# 显示个人的总分和得分
+#
+# 	return jsonify(code=200, data=data)

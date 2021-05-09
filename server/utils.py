@@ -83,9 +83,17 @@ def tasks2json(tasks):
 
     json_array = []
     for task in tasks:
+        if task.commit_num > 0:
+            perfect_rate = round(task.perfect_num / task.commit_num, 2)
+        else:
+            perfect_rate = None
+
         task_obj = {"id": task.id,
                     "name": task.name,
                     "description": task.description,
+                    "commit_num": task.commit_num,
+                    "perfect_num": task.perfect_num,
+                    "perfect_rate": perfect_rate,
                     "answer_video_url": task.answer_video_url}
         json_array.append(task_obj)
     json_dic = {"tasks": json_array}
@@ -97,9 +105,13 @@ def taskset2json(tasksets):
 
     json_array = []
     for taskset in tasksets:
+        if taskset.type == 1:
+            taskset_type = "固定任务集"
+        else:
+            taskset_type = "私有任务集"
         taskset_obj = {"id": taskset.id,
                     "name": taskset.name,
-                    "type": taskset.type}
+                    "type": taskset_type}
         json_array.append(taskset_obj)
     json_dic = {"tasksets": json_array}
 

@@ -121,8 +121,6 @@
     | 参数名 | 类型| 说明 |
     | :-----| :---- | :---- |
     | taskset_id | int | 
-    | offset | int | 第几页
-    | page_size | int | 一页几条数据
 
 - 返回参数
     ``` 
@@ -131,17 +129,15 @@
         "data": {
             "tasks": [
                 {
-                    "answer_video_url": "www.123.com",
-                    "id": 6,
-                    "name": "第x课"
-                },
-                {
                     "answer_video_url": "www.baidu.com",
-                    "id": 7,
-                    "name": "第2课"
+                    "commit_num": 0,
+                    "description": "成为我的更新标准文章就是不同之后游戏.",
+                    "id": 2,
+                    "name": "任务242818",
+                    "perfect_num": 0,
+                    "perfect_rate": null
                 }
-            ],
-            "total_pages": 4
+            ]
         }
     }
     ```

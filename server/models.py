@@ -155,6 +155,8 @@ class Task(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(30), unique=True)
 	description = db.Column(db.String(80))
+	commit_num = db.Column(db.Integer, default=0)
+	perfect_num = db.Column(db.Integer, default=0)
 	answer_video_url = db.Column(db.String(120))
 
 	projects = db.relationship('Project', back_populates='task')

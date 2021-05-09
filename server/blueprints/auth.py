@@ -11,7 +11,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from server.emails import send_confirm_email, send_reset_password_email
 from server.extensions import db
 from server.forms.auth import RegisterForm, LoginForm, ForgetPasswordForm, ResetPasswordForm
-from server.models import User
+from server.models import User, Role
 from server.settings import Operations
 from server.utils import generate_token, validate_token, extract_id_from_token
 from server.decorators import confirm_required
@@ -32,10 +32,12 @@ def login():
         if user is not None:
             if user.validate_password(form.password.data):
                 if login_user(user):
+                    role = Role.query.get(user.role_id)
                     return jsonify(code=200, message='Login success.', data={"id": user.id,
                                                                              "name": user.name,
                                                                              "email": user.email,
-                                                                             "confirmed": user.confirmed})
+                                                                             "confirmed": user.confirmed,
+                                                                             "role": role.name})
                 else:
                     return jsonify(code=400, message='Error, your account is blocked.')
             return jsonify(code=400, message='Error, invalid emails or password.')

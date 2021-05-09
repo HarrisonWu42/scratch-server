@@ -36,18 +36,19 @@
     
     | 参数名 | 类型| 说明 |
     | :-----| :---- | :---- |
-    | email | string | 
-    | password | string | 
+    | email | string |
+    | password | string |
     
 - 返回参数
     ```
     {
         "code": 200,
         "data": {
-            "confirmed": false,
-            "email": "303235738@qq.com",
-            "id": 6,
-            "name": "wuhao"
+            "confirmed": true,
+            "email": "hangzhouwh@qq.com",
+            "id": 1,
+            "name": "admin",
+            "role": "Administrator"
         },
         "message": "Login success."
     }
