@@ -11,7 +11,7 @@ from flask import Blueprint, jsonify, request
 
 from server.extensions import db
 from server.forms.taskset import AddTasksetForm, EditTasksetForm, DeleteTaskForm
-from server.models import Taskset, User, Task
+from server.models import Taskset, User, Task, Project
 from server.utils import tasks2json, taskset2json
 
 taskset_bp = Blueprint('taskset', __name__)
@@ -114,15 +114,23 @@ def show_tasks(taskset_id):
 @taskset_bp.route('/<user_id>/<taskset_id>', methods=['GET'])
 def show_taskset_score(user_id, taskset_id):
 	user_id = int(user_id)
-	user = User.query.get(user_id)
 	taskset_id = int(taskset_id)
 
 	taskset = Taskset.query.get(taskset_id)
 	tasks = taskset.tasks
+	task_id_lst = list()
+	for task in tasks:
+		task_id_lst.append(task.id)
 
-	data = tasks2json(tasks)
+	projects = Project.query.filter_by(user_id=user_id).filter(Project.task_id.in_(task_id_lst)).all()
 
-	return jsonify(code=200, data=data)
+	score = 0
+	for project in projects:
+		score += project.score
+
+	total_score = len(projects) * 5
+
+	return jsonify(code=200, data={"score": score, "total_score": total_score})
 
 
 # 显示某人的题目集

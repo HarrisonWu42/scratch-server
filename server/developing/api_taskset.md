@@ -7,6 +7,7 @@
 | 删除题目集 | POST | http://localhost:5000/taskset/delete
 | 为题目集分配题目|  POST | http://localhost:5000/taskset/assign
 | 查询题目集的的所有题目 | GET | http://localhost:5000/taskset/task/<taskset_id>/<offset>/<page_size>
+| 查询某人某题目集的得分（得分/总分）| GET | http://localhost:5000/taskset/<user_id>/<taskset_id>
 | 查询某个人的题目集| GET| http://localhost:5000/taskset/<user_id>/<offset>/<page_size>
 
 ## 创建题目集
@@ -141,7 +142,26 @@
         }
     }
     ```
-  
+
+## 查询某人某题目集的得分（得分/总分）
+- 请求参数
+    
+    | 参数名 | 类型| 说明 |
+    | :-----| :---- | :---- |
+    | user_id | int | 
+    | taskset_id | int | 
+
+- 返回参数
+    ``` 
+    {
+        "code": 200,
+        "data": {
+            "score": 20,
+            "total_score": 40
+        }
+    }
+    ```
+
 
 ## 查询某个人的题目集
 - 请求参数
