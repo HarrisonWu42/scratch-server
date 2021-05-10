@@ -12,7 +12,7 @@ from flask import Blueprint, jsonify, request
 from server.extensions import db
 from server.forms.taskset import AddTasksetForm, EditTasksetForm, DeleteTaskForm
 from server.models import Taskset, User, Task, Project
-from server.utils import tasks2json, taskset2json
+from server.utils import tasks2json, taskset2json, btasks2json
 
 taskset_bp = Blueprint('taskset', __name__)
 
@@ -171,23 +171,43 @@ def show_tasksets(user_id, offset, page_size):
 	return jsonify(code=200, data=data)
 
 
+# 查询固定任务集（题库）
+@taskset_bp.route('/common/<offset>/<page_size>', methods=['GET'])
+def show_common_tasksets(offset, page_size):
+	page_size = int(page_size)
+	offset = int(offset)
 
-# # 查询题目集的的所有题目（分页版本）
-# @taskset_bp.route('/task/<taskset_id>/<offset>/<page_size>', methods=['GET'])
-# def show_tasks(taskset_id, offset, page_size):
-# 	task_id = int(taskset_id)
-# 	page_size = int(page_size)
-# 	offset = int(offset)
-#
-# 	taskset = Taskset.query.get(taskset_id)
-# 	tasks = taskset.tasks
-# 	page_tasks = tasks[(offset-1) * page_size: offset * page_size]
-#
-# 	total_pages = ceil((len(tasks) + page_size - 1) / page_size)
-#
-# 	data = tasks2json(page_tasks)
-# 	data['total_pages'] = total_pages
-#
-# 	# 显示个人的总分和得分
-#
-# 	return jsonify(code=200, data=data)
+	common_tasksets = Taskset.query.filter_by(type=1).all()
+	page_tasksets = common_tasksets[(offset-1) * page_size: offset * page_size]
+	total_pages = ceil(len(common_tasksets) / page_size)
+
+	data = taskset2json(page_tasksets)
+	data['total_pages'] = total_pages
+
+	return jsonify(code=200, data=data)
+
+
+# 查询私有任务集（题库）
+@taskset_bp.route('/private/<user_id>/<offset>/<page_size>', methods=['GET'])
+def show_private_tasksets(user_id, offset, page_size):
+	user_id = int(user_id)
+	page_size = int(page_size)
+	offset = int(offset)
+
+	# 个人题目集
+	user_tasksets = list()
+	if user_id != 0:
+		user = User.query.get(user_id)
+		groups = user.groups
+		for group in groups:
+			taskset = group.tasksets
+			user_tasksets = user_tasksets + taskset
+
+	page_tasksets = user_tasksets[(offset-1) * page_size: offset * page_size]
+
+	total_pages = ceil(len(user_tasksets) / page_size)
+
+	data = taskset2json(page_tasksets)
+	data['total_pages'] = total_pages
+
+	return jsonify(code=200, data=data)

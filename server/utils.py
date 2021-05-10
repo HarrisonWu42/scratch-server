@@ -101,6 +101,28 @@ def tasks2json(tasks):
     return json_dic
 
 
+def btasks2json(tasks):
+
+    json_array = []
+    for task in tasks:
+        if task.commit_num > 0:
+            perfect_rate = round(task.perfect_num / task.commit_num, 2)
+        else:
+            perfect_rate = None
+
+        task_obj = {"id": task.id,
+                    "name": task.name,
+                    "description": task.description,
+                    "commit_num": task.commit_num,
+                    "perfect_num": task.perfect_num,
+                    "perfect_rate": perfect_rate,
+                    "answer_video_url": task.answer_video_url}
+        json_array.append(task_obj)
+    json_dic = {"tasks": json_array}
+
+    return json_dic
+
+
 def taskset2json(tasksets):
 
     json_array = []

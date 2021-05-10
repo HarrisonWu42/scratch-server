@@ -90,6 +90,14 @@ def show_project(project_id):
 @project_bp.route('/evaluate', methods=['GET'])
 def evaluate(fileid):
 
+
+    # 评测模型
+
+
+    # 生成评语
+
+
+
     return jsonify(code=200)
 
 

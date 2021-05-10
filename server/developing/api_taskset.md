@@ -9,6 +9,10 @@
 | 查询题目集的的所有题目 | GET | http://localhost:5000/taskset/task/<taskset_id>/<offset>/<page_size>
 | 查询某人某题目集的得分（得分/总分）| GET | http://localhost:5000/taskset/<user_id>/<taskset_id>
 | 查询某个人的题目集| GET| http://localhost:5000/taskset/<user_id>/<offset>/<page_size>
+| 查询某个人的题目集| GET| http://localhost:5000/taskset/<user_id>/<offset>/<page_size>
+| 查询固定任务集（题库）| GET| http://localhost:5000/taskset/common/<offset>/<page_size>
+| 查询私有任务集（题库）| GET| http://localhost:5000/taskset/private/<user_id>/<offset>/<page_size>
+
 
 ## 创建题目集
 - 请求参数
@@ -200,3 +204,39 @@
         }
     }
     ```
+
+## 查询固定任务集（题库）
+- 请求参数
+    
+    | 参数名 | 类型| 说明 |
+    | :-----| :---- | :---- |
+    | offset | int | 
+    | page_size | int |
+
+- 返回参数
+    ``` 
+    {
+        "code": 200,
+        "data": {
+            "tasksets": [
+                {
+                    "id": 4,
+                    "name": "任务集903462",
+                    "type": "固定任务集"
+                },
+                {
+                    "id": 5,
+                    "name": "任务集619406",
+                    "type": "固定任务集"
+                },
+                {
+                    "id": 6,
+                    "name": "任务集438636",
+                    "type": "固定任务集"
+                }
+            ],
+            "total_pages": 1
+        }
+    }
+    ```
+
