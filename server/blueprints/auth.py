@@ -89,7 +89,7 @@ def register():
     id = user.id
 
     token = generate_token(user=user, operation=Operations.CONFIRM)
-    url = "http://localhost:8080/#" + url_for(endpoint='auth.confirm', token=token, _external=True)
+    url = 'http://localhost:8080/#' + url_for(endpoint='auth.confirm', token=token)
 
     send_confirm_email(user=user, url=url)
 

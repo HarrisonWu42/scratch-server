@@ -5,14 +5,14 @@
 | 创建班组 | POST | http://localhost:5000/group/add
 | 修改班组 | POST | http://localhost:5000/group/edit
 | 删除班组 | POST | http://localhost:5000/group/delete
-| 关闭班组 | POST | http://localhost:5000/group/close
 | 邀请用户加入班组 | POST | http://localhost:5000/group/invite
 | 把某人踢出某班组 |POST | http://localhost:5000/group/kick
-| 显示某个老师的班组 | GET | http://localhost:5000/group/teacher/<teacher_id>/<offset>/<page_size>
-| 显示某个班组的所有学生 | GET | http://localhost:5000/group/<group_id>/<offset>/<page_size>
+| 显示某个老师的班组 | GET | http://localhost:5000/group/teacher/<teacher_id>
+| 显示某个班组的所有学生(分页) | GET | http://localhost:5000/group/<group_id>/<offset>/<page_size>
 | 一键导入学生到某个班级 | POST | http://localhost:5000/group/import_excel/<group_id>
 | 导出某个班级的学生成绩 | GET | http://localhost:5000/group/output_excel/<group_id>
 | 为班级分配题目集| POST | http://localhost:5000/taskset/assign
+
 
 ## 创建班组
 - 请求参数
@@ -87,32 +87,7 @@
         "message": "Delete group success."
     }
     ```
-  
-  
 
-## 关闭班组
-- 请求参数
-
-    | 参数名 | 类型| 说明 |
-    | :-----| :---- | :---- |
-    | id | int | 
-
-- 返回参数
-    ```
-    {
-        "code": 200,
-        "data": {
-            "description": "xxx",
-            "id": 6,
-            "invite_code": "653890",
-            "name": "C班",
-            "teacher_id": 2,
-            "type": 0
-        },
-        "message": "Close group success."
-    }
-    ```
-  
 
 ## 邀请用户加入班组
 - 请求参数
@@ -160,14 +135,12 @@
     }
     ```
 
-## 显示某个老师的班组
+## 显示某个老师的班组(不分页)
 - 请求参数
     
     | 参数名 | 类型| 说明 |
     | :-----| :---- | :---- |
     | teacher_id | int | 
-    | offset | int |
-    | page_size | int |
     
 - 返回参数
     ``` 
@@ -184,13 +157,13 @@
                     "type": 1
                 }
             ],
-            "total_pages": 4
+            "total": 3
         }
     }
     ```
  
 
-## 显示某个班组的所有学生
+## 显示某个班组的所有学生(分页)
 - 请求参数
     
     | 参数名 | 类型| 说明 |
@@ -274,5 +247,36 @@
             ]
         },
         "message": "Assign taskset success."
+    }
+    ```
+  
+## 注释掉
+| 显示某个老师的班组(分页) | GET | http://localhost:5000/group/teacher/<teacher_id>/<offset>/<page_size>
+
+- 请求参数
+    
+    | 参数名 | 类型| 说明 |
+    | :-----| :---- | :---- |
+    | teacher_id | int | 
+    | offset | int |
+    | page_size | int |
+    
+- 返回参数
+    ``` 
+    {
+        "code": 200,
+        "data": {
+            "groups": [
+                {
+                    "description": "xxx",
+                    "id": 1,
+                    "invite_code": "084795",
+                    "name": "1班",
+                    "teacher_id": 1,
+                    "type": 1
+                }
+            ],
+            "total_pages": 4
+        }
     }
     ```

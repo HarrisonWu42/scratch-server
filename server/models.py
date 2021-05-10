@@ -141,6 +141,7 @@ class Project(db.Model):
 	logicality = db.Column(db.Float)
 	workload = db.Column(db.Float)
 	complexity = db.Column(db.Float)
+	deleted = db.Column(db.Integer, default=0)
 
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	user = db.relationship('User', back_populates='projects')

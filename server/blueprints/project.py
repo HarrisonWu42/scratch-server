@@ -43,6 +43,10 @@ def upload_file():
     db.session.add(project)
     db.session.commit()
 
+    task = Task.query.get(task_id)
+    task.commit_num += 1
+    db.session.commit()
+
     q_id = max_project_id + 1
     project = Project.query.get(q_id)
 
@@ -82,7 +86,7 @@ def show_project(project_id):
                                    "complexity": project.complexity})
 
 
-# 评测！！！
+# 评测, 评测之后，相应任务的满分数会发生变化
 @project_bp.route('/evaluate', methods=['GET'])
 def evaluate(fileid):
 
@@ -92,6 +96,13 @@ def evaluate(fileid):
 # 老师批改项目（修改自动评测的结果）
 @project_bp.route('/evaluate-correct', methods=['POST'])
 def evaluate_correct(fileid):
+
+    return jsonify(code=200)
+
+
+# 删除作品
+@project_bp.route('/delete', methods=['POST'])
+def delete():
 
     return jsonify(code=200)
 

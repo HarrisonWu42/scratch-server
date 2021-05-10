@@ -22,24 +22,17 @@ group_bp = Blueprint('group', __name__)
 
 
 # 显示某个老师的班组
-@group_bp.route('/teacher/<teacher_id>/<offset>/<page_size>', methods=['GET'])
-def show_tasks(teacher_id, offset, page_size):
+@group_bp.route('/teacher/<teacher_id>', methods=['GET'])
+def show_tasks(teacher_id):
     teacher_id = int(teacher_id)
-    page_size = int(page_size)
-    offset = int(offset)
-
     groups = Group.query.filter_by(teacher_id=teacher_id).all()
-    page_groups = groups[(offset-1) * page_size: offset * page_size]
 
-    total_pages = ceil(len(groups) / page_size)
-
-    data = groups2json(page_groups)
-    data['total_pages'] = total_pages
+    data = groups2json(groups)
+    data['total'] = len(groups)
 
     return jsonify(code=200, data=data)
 
 
-# 显示某个班组的所有学生
 @group_bp.route('/<group_id>/<offset>/<page_size>', methods=['GET'])
 def show_students(group_id, offset, page_size):
     id = int(group_id)
@@ -130,25 +123,25 @@ def delete():
                                                                     "invite_code": group.invite_code})
 
 
-# 关闭班组
-@group_bp.route('/close', methods=['POST'])
-def close():
-    form = CloseGroupForm()
-
-    id = form.id.data
-
-    group = Group.query.get(id)
-
-    group.type = 0
-
-    db.session.commit()
-
-    return jsonify(code=200, message="Close group success.", data={"id": group.id,
-                                                                   "name": group.name,
-                                                                   "description": group.description,
-                                                                   "type": group.type,
-                                                                   "teacher_id": group.teacher_id,
-                                                                   "invite_code": group.invite_code})
+# # 关闭班组
+# @group_bp.route('/close', methods=['POST'])
+# def close():
+#     form = CloseGroupForm()
+#
+#     id = form.id.data
+#
+#     group = Group.query.get(id)
+#
+#     group.type = 0
+#
+#     db.session.commit()
+#
+#     return jsonify(code=200, message="Close group success.", data={"id": group.id,
+#                                                                    "name": group.name,
+#                                                                    "description": group.description,
+#                                                                    "type": group.type,
+#                                                                    "teacher_id": group.teacher_id,
+#                                                                    "invite_code": group.invite_code})
 
 
 # 通过邀请码邀请用户加入班组
@@ -300,3 +293,24 @@ def output_excel(group_id):
     )
 
     return file_data
+
+
+# # 显示某个老师的班组(分页)
+# @group_bp.route('/teacher/<teacher_id>/<offset>/<page_size>', methods=['GET'])
+# def show_tasks(teacher_id, offset, page_size):
+#     teacher_id = int(teacher_id)
+#     page_size = int(page_size)
+#     offset = int(offset)
+#
+#     groups = Group.query.filter_by(teacher_id=teacher_id).all()
+#     page_groups = groups[(offset-1) * page_size: offset * page_size]
+#
+#     total_pages = ceil(len(groups) / page_size)
+#
+#     data = groups2json(page_groups)
+#     data['total_pages'] = total_pages
+#
+#     return jsonify(code=200, data=data)
+
+
+# 显示某个班组的所有学生
