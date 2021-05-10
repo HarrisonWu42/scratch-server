@@ -33,6 +33,7 @@ def show_tasks(teacher_id):
     return jsonify(code=200, data=data)
 
 
+# 显示某个班组的所有学生
 @group_bp.route('/<group_id>/<offset>/<page_size>', methods=['GET'])
 def show_students(group_id, offset, page_size):
     id = int(group_id)
@@ -311,6 +312,3 @@ def output_excel(group_id):
 #     data['total_pages'] = total_pages
 #
 #     return jsonify(code=200, data=data)
-
-
-# 显示某个班组的所有学生

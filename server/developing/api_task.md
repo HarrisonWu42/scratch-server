@@ -15,7 +15,7 @@
     | :-----| :---- | :---- |
     | name | string | 
     | description | text| 
-    | answer_video_url | string | 
+    | answer_video_url | string |
 
 - 返回参数
     ```

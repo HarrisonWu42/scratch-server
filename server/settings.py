@@ -38,7 +38,7 @@ MAIL_USE_TLS = False
 MAIL_USERNAME = 'hangzhouwh@qq.com'
 ADMIN_EMAIL = MAIL_USERNAME
 TEACHER_EMAIL = 'zucc.edu.cn'
-MAIL_PASSWORD = 'amzzvffdquulbgbi'  # qq邮箱授权码
+MAIL_PASSWORD = 'xopwpdloezkvcaig'  # qq邮箱授权码
 MAIL_DEFAULT_SENDER = ('ScratchAi Admin', MAIL_USERNAME)
 SCRATCHAI_MAIL_SUBJECT_PREFIX = '[scratchai]'
 
