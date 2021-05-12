@@ -65,7 +65,6 @@ def fake_group(count=5):
 
 		group = Group(name='班级'+fake.postcode(),
 					  description=fake.text(max_nb_chars=20),
-					  type=1,
 					  invite_code=invite_code,
 					  teacher_id=2)
 
@@ -78,7 +77,7 @@ def fake_group(count=5):
 
 def fake_taskset(count=3):
 	for i in range(count):
-		taskset = Taskset(name='任务集'+fake.postcode(), type=0)
+		taskset = Taskset(name='任务集'+fake.postcode(), type=0, teacher_id=2)
 
 		db.session.add(taskset)
 		try:
@@ -87,7 +86,7 @@ def fake_taskset(count=3):
 			db.session.rollback()
 
 	for i in range(count):
-		taskset = Taskset(name='任务集'+fake.postcode(), type=1)
+		taskset = Taskset(name='任务集'+fake.postcode(), type=1, teacher_id=2)
 
 		db.session.add(taskset)
 		try:
@@ -100,7 +99,8 @@ def fake_task(count=20):
 	for i in range(count):
 		task = Task(name='任务'+fake.postcode(),
 					description=fake.text(max_nb_chars=20),
-					answer_video_url="www.baidu.com")
+					answer_video_url="www.baidu.com",
+					teacher_id=2)
 
 		db.session.add(task)
 		try:

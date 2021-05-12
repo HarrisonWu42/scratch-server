@@ -105,3 +105,29 @@ def show_projects(user_id, task_id):
 	data = bprojects2json(projects)
 
 	return jsonify(code=200, data=data)
+
+
+# 查看所有任务
+@task_bp.route('/all/<offset>/<page_size>', methods=['GET'])
+def show_all_tasks(offset, page_size):
+	page_size = int(page_size)
+	offset = int(offset)
+
+	tasks = Task.query.all()
+
+	json_array = []
+	for task in tasks:
+		teacher_id = task.teacher_id
+		teacher = User.query.get(teacher_id)
+		task_obj = {"id": task.id,
+				   "name": task.name,
+				   "description": task.description,
+					"teacher": teacher.name}
+		json_array.append(task_obj)
+
+	page_tasks = json_array[(offset - 1) * page_size: offset * page_size]
+	total_pages = ceil(len(tasks) / page_size)
+
+	data = {"tasksets": page_tasks, 'total_pages': total_pages}
+
+	return jsonify(code=200, data=data)

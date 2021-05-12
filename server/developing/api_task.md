@@ -7,6 +7,7 @@
 | 删除题目 | POST | http://localhost:5000/task/delete
 | 查看某题目信息| GET | http://localhost:5000/task/<task_id>
 | 查看某人某题目的所有提交列表| GET| http://localhost:5000/task/project/<user_id>/<task_id>
+| 查看所有任务| GET | http://localhost:5000/task/all/<offset>/<page_size>
 
 ## 创建题目
 - 请求参数
@@ -128,6 +129,38 @@
                     "name": "作品"
                 },
             ]
+        }
+    }
+    ```
+  
+## 查看所有任务
+- 请求参数
+    
+    | 参数名 | 类型| 说明 |
+    | :-----| :---- | :---- |
+    | offset | int |
+    | page_size| int |
+
+- 返回参数
+    ```
+    {
+        "code": 200,
+        "data": {
+            "tasksets": [
+                {
+                    "description": "威望公司应用本站发生不会的人地方以后.",
+                    "id": 1,
+                    "name": "任务594254",
+                    "teacher": "teacher"
+                },
+                {
+                    "description": "首页所有以下的是控制关系电话学习以后.",
+                    "id": 2,
+                    "name": "任务228913",
+                    "teacher": "teacher"
+                }
+            ],
+            "total_pages": 4
         }
     }
     ```

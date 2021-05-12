@@ -147,7 +147,6 @@ def groups2json(groups):
         group_obj = {"id": group.id,
                      "name": group.name,
                      "description": group.description,
-                     "type": group.type,
                      "teacher_id": group.teacher_id,
                      "invite_code": group.invite_code}
         json_array.append(group_obj)

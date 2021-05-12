@@ -21,5 +21,6 @@ class ProjectForm(FlaskForm):
 
 class CorrectForm(FlaskForm):
 	id = IntegerField('id')
-	score = IntegerField('id')
+	score = IntegerField('score')
+	comment = TextAreaField('comment')
 	submit = SubmitField()

@@ -54,8 +54,8 @@ def edit():
 	db.session.commit()
 
 	return jsonify(code=200, message="Edit taskset success.", data={"id": taskset.id,
-																   "name": taskset.name,
-																   "type": taskset.type})
+																	"name": taskset.name,
+																	"type": taskset.type})
 
 
 # 删除题目集
@@ -71,8 +71,8 @@ def delete():
 	db.session.commit()
 
 	return jsonify(code=200, message="Delete taskset success", data={"id": taskset.id,
-																   "name": taskset.name,
-																   "type": taskset.type})
+																	 "name": taskset.name,
+																	 "type": taskset.type})
 
 
 # 为题目集分配题目
@@ -154,7 +154,7 @@ def show_tasksets(user_id, offset, page_size):
 			user_tasksets = user_tasksets + taskset
 
 	tasksets = common_tasksets + user_tasksets  # 任务集合集
-	page_tasksets = tasksets[(offset-1) * page_size: offset * page_size]
+	page_tasksets = tasksets[(offset - 1) * page_size: offset * page_size]
 
 	# 总页数
 	total_pages = ceil(len(tasksets) / page_size)
@@ -177,9 +177,9 @@ def show_common_tasksets(offset, page_size):
 	page_size = int(page_size)
 	offset = int(offset)
 
-	common_tasksets = Taskset.query.filter_by(type=1).all()
-	page_tasksets = common_tasksets[(offset-1) * page_size: offset * page_size]
-	total_pages = ceil(len(common_tasksets) / page_size)
+	tasksets = Taskset.query.filter_by(type=1).all()
+	page_tasksets = tasksets[(offset - 1) * page_size: offset * page_size]
+	total_pages = ceil(len(tasksets) / page_size)
 
 	data = taskset2json(page_tasksets)
 	data['total_pages'] = total_pages
@@ -194,18 +194,10 @@ def show_private_tasksets(user_id, offset, page_size):
 	page_size = int(page_size)
 	offset = int(offset)
 
-	# 个人题目集
-	user_tasksets = list()
-	if user_id != 0:
-		user = User.query.get(user_id)
-		groups = user.groups
-		for group in groups:
-			taskset = group.tasksets
-			user_tasksets = user_tasksets + taskset
+	tasksets = Taskset.query.filter_by(teacher_id=user_id, type=0).all()
 
-	page_tasksets = user_tasksets[(offset-1) * page_size: offset * page_size]
-
-	total_pages = ceil(len(user_tasksets) / page_size)
+	page_tasksets = tasksets[(offset - 1) * page_size: offset * page_size]
+	total_pages = ceil(len(tasksets) / page_size)
 
 	data = taskset2json(page_tasksets)
 	data['total_pages'] = total_pages
