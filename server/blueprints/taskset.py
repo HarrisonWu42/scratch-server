@@ -24,8 +24,9 @@ def add():
 
 	name = form.name.data
 	type = form.type.data
+	teacher_id = form.teacher_id.data
 
-	taskset = Taskset(name=name, type=type)
+	taskset = Taskset(name=name, type=type, teacher_id=teacher_id)
 
 	db.session.add(taskset)
 	db.session.commit()
@@ -34,7 +35,8 @@ def add():
 
 	return jsonify(code=200, message="Add taskset success.", data={"id": taskset.id,
 																   "name": taskset.name,
-																   "type": taskset.type})
+																   "type": taskset.type,
+																   "teacher_id": teacher_id})
 
 
 # 修改题目集

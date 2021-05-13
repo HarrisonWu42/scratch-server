@@ -26,7 +26,8 @@ def add():
 	name = form.name.data
 	description = form.description.data
 	answer_video_url = form.answer_video_url.data
-	task = Task(name=name, description=description, answer_video_url=answer_video_url)
+	teacher_id = form.teacher_id.data
+	task = Task(name=name, description=description, teacher_id=teacher_id, answer_video_url=answer_video_url)
 
 	db.session.add(task)
 	db.session.commit()
@@ -36,6 +37,7 @@ def add():
 	return jsonify(code=200, message="Add task success.", data={"id": task.id,
 																"name": task.name,
 																"description": task.description,
+																"teacher_id": task.teacher_id,
 																"answer_video_url": task.answer_video_url})
 
 

@@ -14,6 +14,7 @@ from wtforms.validators import DataRequired, Length
 class AddTasksetForm(FlaskForm):
     name = StringField('name', validators=[DataRequired(), Length(1, 30)])
     type = IntegerField('type')
+    teacher_id = IntegerField('teacher_id')
     submit = SubmitField()
 
 

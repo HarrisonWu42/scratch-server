@@ -15,6 +15,7 @@ class AddTaskForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
     description = TextAreaField('Description', validators=[DataRequired(), Length(1, 254)])
     answer_video_url = StringField('Answer Video Url', validators=[DataRequired(), Length(1, 120)])
+    teacher_id = IntegerField('teacher_id')
     submit = SubmitField()
 
 
