@@ -136,8 +136,8 @@ def show_all_tasks(offset, page_size):
 
 
 # 为题目集分配题目
-@task_bp.route('/assign2taskset', methods=['POST'])
-def assign2taskset():
+@task_bp.route('/assign', methods=['POST'])
+def assign():
 	data = json.loads(bytes.decode(request.data))
 	taskset_id = data["taskset_id"]
 	task_id_list = data['tasks']
@@ -155,3 +155,26 @@ def assign2taskset():
 	data['taskset_name'] = taskset.name
 
 	return jsonify(code=200, message="Assign task success.", data=data)
+
+
+# 为题目集分配题目
+@task_bp.route('/assign2taskset/<taskset_id>/<task_id>', methods=['POST'])
+def assign2taskset(taskset_id, task_id):
+	taskset_id = int(taskset_id)
+	task_id = int(task_id)
+
+	taskset = Taskset.query.get(taskset_id)
+	task = Task.query.get(task_id)
+
+	if task not in taskset.tasks:
+		taskset.tasks.append(task)
+		msg = "Assign task success."
+	else:
+		msg = "Task already exist taskset."
+
+	db.session.commit()
+
+	return jsonify(code=200, message=msg, data={"task_id": task.id,
+												"task_name": task.name,
+												"taskset_id": taskset.id,
+												"taskset_name": taskset.name})
