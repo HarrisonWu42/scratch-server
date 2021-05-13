@@ -28,3 +28,9 @@ class EditTasksetForm(FlaskForm):
 class DeleteTaskForm(FlaskForm):
     id = IntegerField('id')
     submit = SubmitField()
+
+
+class DeleteTaskTasksetForm(FlaskForm):
+    task_id = IntegerField('task_id')
+    taskset_id = IntegerField('taskset_id')
+    submit = SubmitField()

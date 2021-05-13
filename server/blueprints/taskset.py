@@ -10,7 +10,7 @@ from math import ceil
 from flask import Blueprint, jsonify, request
 
 from server.extensions import db
-from server.forms.taskset import AddTasksetForm, EditTasksetForm, DeleteTaskForm
+from server.forms.taskset import AddTasksetForm, EditTasksetForm, DeleteTaskForm, DeleteTaskTasksetForm
 from server.models import Taskset, User, Task, Project, Group
 from server.utils import tasks2json, taskset2json, btasks2json
 
@@ -238,3 +238,23 @@ def assign2group(group_id, taskset_id):
 												"group_name": group.name,
 												"taskset_id": taskset.id,
 												"taskset_name": taskset.name})
+
+
+# 删除题目集中的题目
+@taskset_bp.route('/delete_taskset', methods=['POST'])
+def delete_task_from_taskset():
+	form = DeleteTaskTasksetForm()
+
+	task_id = form.task_id.data
+	taskset_id = form.taskset_id.data
+
+	taskset = Taskset.query.get(taskset_id)
+	task = Task.query.get(task_id)
+
+	taskset.tasks.remove(task)
+	db.session.commit()
+
+	return jsonify(code=200, message="Delete task fom taskset success", data={"task_id": task.id,
+																			  "task_name": task.name,
+																			  "taskset_id": taskset.id,
+																			  "taskset_name": taskset.name})
