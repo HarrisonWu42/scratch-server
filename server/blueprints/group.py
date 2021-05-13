@@ -187,7 +187,7 @@ def import_student_from_excel(group_id):
 	try:
 		db.session.execute(
 			User.__table__.insert(),
-			[{"name": row['用户名'], "email": row['邮箱'], "password_hash": default_password} for idx, row in
+			[{"name": row['用户名'], "email": row['邮箱'], "password_hash": default_password, "role_id":1} for idx, row in
 			 data.iterrows()]
 		)
 		db.session.commit()
@@ -279,5 +279,4 @@ def get_invite_code(group_id):
 
 	return jsonify(code=200, data={"group_id": group.id,
 								   "invite_code": group.invite_code})
-
 

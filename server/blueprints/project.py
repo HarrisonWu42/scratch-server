@@ -104,9 +104,24 @@ def evaluate(project_id):
 	project.logicality = float(logicality)
 	project.workload = float(workload)
 	project.complexity = float(complexity)
-	db.session.commit()
+
+	# TODO 要验一下score，如果score满分是4分的话，要score+=1
 
 	# 生成评语
+	overall = "【作业质量】"
+	knowledge = "【知识点使用情况】"
+	supply = "【补充】"
+	if score == 5:
+		overall += "优秀"
+	elif score == 4 or score == 3:
+		overall += "良好"
+	else:
+		overall += "一般"
+
+	comment = overall + "\n" + knowledge + "\n" + supply
+	project.comment = comment
+
+	db.session.commit()
 
 	return jsonify(code=200, message="Evaluate finished!")
 
