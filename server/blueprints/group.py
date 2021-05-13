@@ -124,27 +124,6 @@ def delete():
 																	"invite_code": group.invite_code})
 
 
-# # 关闭班组
-# @group_bp.route('/close', methods=['POST'])
-# def close():
-#     form = CloseGroupForm()
-#
-#     id = form.id.data
-#
-#     group = Group.query.get(id)
-#
-#     group.type = 0
-#
-#     db.session.commit()
-#
-#     return jsonify(code=200, message="Close group success.", data={"id": group.id,
-#                                                                    "name": group.name,
-#                                                                    "description": group.description,
-#                                                                    "type": group.type,
-#                                                                    "teacher_id": group.teacher_id,
-#                                                                    "invite_code": group.invite_code})
-
-
 # 通过邀请码邀请用户加入班组
 @group_bp.route('/invite', methods=['POST'])
 def invite():
@@ -185,28 +164,6 @@ def kick():
 															  "email": user.email,
 															  "group_id": group.id,
 															  "group_name": group.name})
-
-
-# 为班级分配题目集
-@group_bp.route('/assign', methods=['POST'])
-def assign():
-	data = json.loads(bytes.decode(request.data))
-	group_id = data["group_id"]
-	taskset_id_list = data['tasksets']
-
-	group = Group.query.get(group_id)
-	for taskset_id in taskset_id_list:
-		taskset = Taskset.query.get(taskset_id)
-		group.tasksets.append(taskset)
-
-	db.session.commit()
-
-	tasksets = group.tasksets
-	data = taskset2json(tasksets)
-	data['group_id'] = group.id
-	data['group_name'] = group.name
-
-	return jsonify(code=200, message="Assign taskset success.", data=data)
 
 
 # 通过导入excel将学生一键加入班级
@@ -322,3 +279,5 @@ def get_invite_code(group_id):
 
 	return jsonify(code=200, data={"group_id": group.id,
 								   "invite_code": group.invite_code})
+
+

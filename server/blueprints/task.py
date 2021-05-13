@@ -10,10 +10,10 @@ from flask import Blueprint, jsonify, request
 
 from server.extensions import db
 from server.forms.task import AddTaskForm, EditTaskForm, DeleteTaskForm
-from server.models import Task, User, Project
+from server.models import Task, User, Project, Taskset
 from math import ceil
 
-from server.utils import bprojects2json
+from server.utils import bprojects2json, tasks2json
 
 task_bp = Blueprint('task', __name__)
 
@@ -131,3 +131,25 @@ def show_all_tasks(offset, page_size):
 	data = {"tasksets": page_tasks, 'total_pages': total_pages}
 
 	return jsonify(code=200, data=data)
+
+
+# 为题目集分配题目
+@task_bp.route('/assign2taskset', methods=['POST'])
+def assign2taskset():
+	data = json.loads(bytes.decode(request.data))
+	taskset_id = data["taskset_id"]
+	task_id_list = data['tasks']
+
+	taskset = Taskset.query.get(taskset_id)
+	for task_id in task_id_list:
+		task = Task.query.get(task_id)
+		taskset.tasks.append(task)
+
+	db.session.commit()
+
+	tasks = taskset.tasks
+	data = tasks2json(tasks)
+	data['taskset_id'] = taskset.id
+	data['taskset_name'] = taskset.name
+
+	return jsonify(code=200, message="Assign task success.", data=data)
