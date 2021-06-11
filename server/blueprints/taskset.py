@@ -106,7 +106,8 @@ def show_taskset_score(user_id, taskset_id):
 
 	score = 0
 	for project in projects:
-		score += project.score
+		if project.score is not None:
+			score += project.score
 
 	total_score = len(projects) * 5
 

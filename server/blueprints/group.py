@@ -171,8 +171,8 @@ def kick():
 def import_student_from_excel(group_id):
 	file = request.files['file']
 
-	print('file', type(file), file)
-	print(file.filename)  # 打印文件名
+	# print('file', type(file), file)
+	# print(file.filename)  # 打印文件名
 
 	data = pd.read_excel(file)
 	column_names = data.columns.values.tolist()
@@ -203,7 +203,7 @@ def import_student_from_excel(group_id):
 		return jsonify(code=403, message="Import students error.", exception=e)
 
 
-# 导出班级的学生成绩   user_name, email, task_name, project_name, score, comment(后续可能还要加上传时间和批改时间)
+# 导出班级的学生成绩
 @group_bp.route('/output_excel/<group_id>', methods=['GET'])
 def output_excel(group_id):
 	group = Group.query.get(group_id)

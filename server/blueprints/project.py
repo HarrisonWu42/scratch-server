@@ -9,6 +9,7 @@
 from flask import Blueprint, jsonify, request, send_file
 from datetime import datetime
 
+from server.algorithms.comment import generate_comment
 from server.algorithms.model import cls
 from server.extensions import db
 from server.models import User, Task, Project
@@ -96,32 +97,31 @@ def evaluate(project_id):
 	user_id = project.user_id
 	project_name = project.name
 
-	dirpath = os.path.join(os.getcwd(), 'files', str(user_id), str(project_id))
+	dir_path = os.path.join(os.getcwd(), 'files', str(user_id), str(project_id))
 
 	# 评测
-	score, logicality, workload, complexity = cls(dirpath, user_id, project_id, project_name)
+	score, logicality, workload, complexity, num_ir_roles, _, num_beast, num_bill = cls(dir_path, user_id, project_id, project_name)
+	score += 1
+
 	project.score = int(score)
 	project.logicality = float(logicality)
 	project.workload = float(workload)
 	project.complexity = float(complexity)
 
-	# TODO 要验一下score，如果score满分是4分的话，要score+=1
 
 	# 生成评语
-	overall = "【作业质量】"
-	knowledge = "【知识点使用情况】"
-	supply = "【补充】"
-	if score == 5:
-		overall += "优秀"
-	elif score == 4 or score == 3:
-		overall += "良好"
-	else:
-		overall += "一般"
+	project_path = dir_path + "/" + project_name + ".json"
+	comment = generate_comment(project_path, score, logicality, workload, complexity, num_ir_roles, num_beast, num_bill)
 
-	comment = overall + "\n" + knowledge + "\n" + supply
 	project.comment = comment
 
 	db.session.commit()
+
+	if score == 5:
+		task = Task.query.get(project.task_id)
+		task.perfect_num += 1
+		db.session.commit()
+
 
 	return jsonify(code=200, message="Evaluate finished!")
 
@@ -134,10 +134,14 @@ def evaluate_correct():
 	project_id = form.id.data
 	score = form.score.data
 	comment = form.comment.data
+	teacher_id = form.teacher_id.data
 
 	project = Project.query.get(project_id)
 	project.score = score
 	project.comment = comment
+	project.correct_timestamp = datetime.utcnow()
+	project.teacher_id = teacher_id
+
 	db.session.commit()
 
 	return jsonify(code=200, message="Edit group success.", data={"id": project.id,

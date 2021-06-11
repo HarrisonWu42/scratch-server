@@ -117,6 +117,11 @@ class User(db.Model, UserMixin):
 	def is_teacher(self):
 		return self.role.name == 'Teacher'
 
+	def can(self, permission_name):
+		permission = Permission.query.filter_by(name=permission_name).first()
+		return permission is not None and self.role is not None and permission in self.role.permissions
+
+
 
 class Group(db.Model):
 	id = db.Column(db.Integer, primary_key=True)

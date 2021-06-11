@@ -23,4 +23,5 @@ class CorrectForm(FlaskForm):
 	id = IntegerField('id')
 	score = IntegerField('score')
 	comment = TextAreaField('comment')
+	teacher_id = IntegerField('teacher_id')
 	submit = SubmitField()
